@@ -1,5 +1,5 @@
   <TR>
-    <TH>Totals</TH>
+    <TH COLSPAN=2>Totals</TH>
     <TD ALIGN=RIGHT><Q3LOG TYPE="Value" NAME="Kills"></TD>
     <TD ALIGN=RIGHT><Q3LOG TYPE="Value" NAME="Deaths"></TD>
     <TD ALIGN=RIGHT><Q3LOG TYPE="Value" NAME="Efficiency">%</TD>

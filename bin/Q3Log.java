@@ -25,6 +25,18 @@ public class Q3Log {
     
 */
 
+// The program version
+public static final String PROGVER = new String("1.5"); 
+// The programs name
+public static final String PROGNAME = new String("Q3Log"); 
+// The programs description
+public static final String PROGDESC = new String("Quake 3 Arena Stats Generator"); 
+// Full program info
+public static final String PROGFULL = new String(PROGNAME + " v" + PROGVER + " - " + PROGDESC); 
+// Program homepage
+public static final String PROGURL = new String("http://www.wilf.co.uk/"); 
+
+
 // The following contains all the different lines that are defined as System (feel free to add to it for other mods)
 public static final String[] TXTSYSTEM = {
   "InitGame",
@@ -181,13 +193,15 @@ public static final String CLOSETAG = new String(">"); // End of template tag
 public static final String LINENAME = "NAME"; // Internal (Label for the name of the tag)
 public static final String LINETYPE = "TYPE"; // Internal (Label for the type of the tag)
 public static final String STATICIM = new String("indiv_main.htm_"); // File name for Main Individual page
-public static final String STATICIO = new String("indiv_oponents.htm_"); // File name for Oponents Individual page
+public static final String STATICIOBELOW = new String("indiv_oponents_below.htm_"); // File name for Oponents Individual page
+public static final String STATICIOABOVE = new String("indiv_oponents_above.htm_"); // File name for Oponents Individual page
 public static final String STATICIW = new String("indiv_weapons.htm_"); // File name for Weapons Individual page
 public static final String STATICIOT = new String("indiv_oponents_total.htm_"); // File name for Oponents Totals Individual page
 public static final String STATICIWT = new String("indiv_weapons_total.htm_"); // File name for Weapons Totals Individual page
 public static final String STATICTABLE = new String("table_main.htm_"); // File name for Main page
-public static final String STATICROW = new String("table_row.htm_"); // File name for Main Table Row page
-public static final String STATICTOTAL = new String("table_total.htm_"); // File name for Table Total Row page
+public static final String STATICROWABOVE = new String("table_row_above.htm_"); // File name for Main Table Row page
+public static final String STATICROWBELOW = new String("table_row_below.htm_"); // File name for Main Table Row page
+public static final String STATICTOTAL = new String("table_row_total.htm_"); // File name for Table Total Row page
 public static final String PROPSTATIC = new String("Static"); // Static property name (for conf file)
 public static final String PROPTARGET = new String("Target"); // Target property name (for conf file)
 public static final String PROPCUTOFF = new String("Cutoff"); // Cutoff property name (for conf file)
@@ -201,11 +215,12 @@ public static final String TAGEFFICIENCY = new String("EFFICIENCY");
 public static final String TAGFRAGS = new String("FRAGS");
 public static final String TAGKILLRATIO = new String("KILLRATIO");
 public static final String TAGKILLS = new String("KILLS");
+public static final String TAGMEMBER = new String("MEMBER");
 public static final String TAGOPONENT = new String("OPONENT");
-public static final String TAGOPONENTS = new String("OPONENTS");
 public static final String TAGSUICIDES = new String("SUICIDES");
 public static final String TAGRANK = new String("RANK");
-public static final String TAGROWS = new String("ROWS");
+public static final String TAGABOVE = new String("ABOVE");
+public static final String TAGBELOW = new String("BELOW");
 public static final String TAGTITLE = new String("TITLE");
 public static final String TAGTOTALS = new String("TOTALS");
 public static final String TAGUSER = new String("USER");
@@ -215,6 +230,11 @@ public static final String TAGWEAPONS = new String("WEAPONS");
 
 private static final String SYSDATE = "DATE"; // Value asking for Date
 private static final String SYSTIME = "TIME"; // Value asking for Time
+private static final String SYSPROGNAME = "PROGNAME"; // Value asking for our name
+private static final String SYSPROGVER = "PROGVER"; // Value asking for our version
+private static final String SYSPROGDESC = "PROGDESC"; // Value asking for our description
+private static final String SYSPROGFULL = "PROGFULL"; // Value asking for all the above 3 put together
+private static final String SYSPROGURL = "PROGURL"; // Value asking for our homepage
 
 private static final String PATHSEP = new String("@"); // What seperates the paths in the command line arguments
 private static final String LINESEP = System.getProperty("line.separator"); // The line seperator for this system
@@ -225,17 +245,72 @@ private int iNextUserID = 1; // Holds the next UserId to use
 
 // The following vectors hold the template file lines
 private Vector vIndivMain = new Vector();
-private Vector vIndivOpon = new Vector();
+private Vector vIndivOponBelow = new Vector();
+private Vector vIndivOponAbove = new Vector();
 private Vector vIndivWeap = new Vector();
 private Vector vIndivTOpo = new Vector();
 private Vector vIndivTWea = new Vector();
 private Vector vTableMain = new Vector();
-private Vector vTableRows = new Vector();
+private Vector vTableRowsAbove = new Vector();
+private Vector vTableRowsBelow = new Vector();
 private Vector vTableTRow = new Vector();
 
 private Hashtable htUsers = null; // Holds a list of users and their details
 private Hashtable htKills = new Hashtable(); // Holds all the kills in the logfile
 private Properties prProp = new Properties(); // Properties read from the config file
+
+private String[] sWeaponsList;
+private String sType;
+private String sTitle;
+private String sUser = new String();
+private String sOponent = new String();
+private String sWeapon = new String();
+private String sFile = new String();
+private String sAbsTotKillRatio = new String();
+private String sKillRatio = new String();
+private String sLink = new String();
+private String sHold = new String();
+private String sCSS = new String();
+private String sTarget = new String("individual");
+private String sStatic = new String();
+private String sTotals = new String();
+
+private Integer iDeaths[] = new Integer[3];
+private Integer iHolder = new Integer(0);
+private Integer iUser = new Integer(0);
+private Integer iOponent = new Integer(0);
+
+private Vector vWeapons = new Vector();
+private Vector vOponentAbove = new Vector();
+private Vector vOponentBelow = new Vector();
+private Vector vTOponent = new Vector();
+private Vector vRowsAbove = new Vector();
+private Vector vRowsBelow = new Vector();
+
+private Hashtable htPeople = new Hashtable();
+private Hashtable htPerson = new Hashtable();
+private Hashtable htWeapon = new Hashtable();
+private Hashtable htMainUser = new Hashtable();
+private Hashtable htHold = new Hashtable();
+private Hashtable htHoldInd = new Hashtable();
+private Hashtable htIndivAbove = new Hashtable();
+private Hashtable htIndivBelow = new Hashtable();
+private Hashtable htScores = new Hashtable();
+private Hashtable htScoresInd = new Hashtable();
+private Hashtable htTags = new Hashtable();
+private Hashtable htHoldTotals = new Hashtable();
+
+private Hashtable htUserOponents = new Hashtable();
+
+private BufferedWriter bwOut;
+private BufferedWriter bwUser;
+
+private int iWeapon = 0;private int iKills = 0;private int iKill = 0;private int iDeath = 0;private int iTotalKills = 0;
+private int iPercent = 0;private int iStart = 0;private int iRank = 0;private int iAbsTotFrags = 0;
+private int iAbsTotKills = 0;private int iAbsTotDeaths = 0;private int iAbsTotSuicides = 0;private int iCutOff = 0;
+private int iAbsTotRank = 0;private int iAbsTotEfficiency = 0;private int iAbsTotUsers = 0;private int iTotKills = 0;
+private int iTotDeaths = 0;private int[] iWeaponTotals;
+private float fKills;float fDeaths;float fSuicides;float fAbsTotKillRatio = 0;float fAbsTotUsers = 0;
 
   //  Constructer for the class
   //
@@ -635,26 +710,29 @@ private Properties prProp = new Properties(); // Properties read from the config
   //  Date          :   13th September 2002
   //
   //
-  private void readStatic(String sPath) throws IllegalArgumentException,FileNotFoundException,IOException {
+  private void readStatic() throws IllegalArgumentException,FileNotFoundException,IOException {
   File fIn;
-    sPath = checkDir(sPath);
-    fIn = new File(sPath + STATICIM);
+    sStatic = checkDir(sStatic);
+    fIn = new File(sStatic + STATICIM);
     vIndivMain = readFile(fIn);
-    fIn = new File(sPath + STATICIO);
-    vIndivOpon = readFile(fIn);
-    fIn = new File(sPath + STATICIW);
+    fIn = new File(sStatic + STATICIOBELOW);
+    vIndivOponBelow = readFile(fIn);
+    fIn = new File(sStatic + STATICIOABOVE);
+    vIndivOponAbove = readFile(fIn);
+    fIn = new File(sStatic + STATICIW);
     vIndivWeap = readFile(fIn);
-    fIn = new File(sPath + STATICIWT);
+    fIn = new File(sStatic + STATICIWT);
     vIndivTWea = readFile(fIn);
-    fIn = new File(sPath + STATICIOT);
+    fIn = new File(sStatic + STATICIOT);
     vIndivTOpo = readFile(fIn);
-    fIn = new File(sPath + STATICTABLE);
+    fIn = new File(sStatic + STATICTABLE);
     vTableMain = readFile(fIn);
-    fIn = new File(sPath + STATICROW);
-    vTableRows = readFile(fIn);
-    fIn = new File(sPath + STATICTOTAL);
+    fIn = new File(sStatic + STATICROWABOVE);
+    vTableRowsAbove = readFile(fIn);
+    fIn = new File(sStatic + STATICROWBELOW);
+    vTableRowsBelow = readFile(fIn);
+    fIn = new File(sStatic + STATICTOTAL);
     vTableTRow = readFile(fIn);
-    
   }
 
   //  Returns the parameter value from the current tag
@@ -707,6 +785,16 @@ private Properties prProp = new Properties(); // Properties read from the config
     } else if (sName.equals(SYSDATE)) {
       defaultDate = DateFormat.getDateInstance();
       sReturn = defaultDate.format(new Date());
+    } else if (sName.equals(SYSPROGNAME)) {
+      sReturn = PROGNAME;
+    } else if (sName.equals(SYSPROGVER)) {
+      sReturn = PROGVER;
+    } else if (sName.equals(SYSPROGDESC)) {
+      sReturn = PROGDESC;
+    } else if (sName.equals(SYSPROGFULL)) {
+      sReturn = PROGFULL;
+    } else if (sName.equals(SYSPROGURL)) {
+      sReturn = PROGURL;
     }
     return sReturn;
   }
@@ -718,7 +806,7 @@ private Properties prProp = new Properties(); // Properties read from the config
   //  Date          :   13th September 2002
   //
   //
-  private Vector swapTags(Vector vInput,Hashtable htTags) {
+  private String swapTags(Vector vInput,Hashtable htTags) {
   String sLine = new String();
   Vector vReturn = new Vector();
   String sTag = new String();
@@ -748,7 +836,7 @@ private Properties prProp = new Properties(); // Properties read from the config
       sLine.replaceAll(FAKEOPENTAG,OPENTAG);
       vReturn.add(sLine);
     }
-    return vReturn;
+    return getString(vReturn);
   }
 
   //  Parses a log file and outputs a compressed version containing just the frag lines
@@ -829,67 +917,53 @@ private Properties prProp = new Properties(); // Properties read from the config
     }
   }
 
-  //  Outputs stats files based on the current kill hashtable
+  //  Adds the kills to the position specified in the users (specified) array
   //
   //  Written by    :   Stuart Butcher
   //
   //  Date          :   12th September 2002
   //
   //
-  protected void outputLog(String sOutDir,String sServer,String sAdd) throws IOException,IllegalArgumentException {
-  String[] sWeaponsList = getWeaponsList(sAdd);
-  String sType = getType(sAdd);
-  String sTitle = new String("Quake 3 Arena - " + sType + " Stats (" + sServer + ")");
-  String sUser = new String();
-  String sOponent = new String();
-  String sWeapon = new String();
-  String sFile = new String();
-  String sAbsTotKillRatio = new String();
-  String sKillRatio = new String();
-  String sLink = new String();
-  String sHold = new String();
-  String sCSS = new String();
-  String sTarget = new String("individual");
-  String sStatic = new String();
-  String sTotals = new String();
+  private void addKills(String sUser,int iKills,int iPos) {
+    iDeaths = new Integer[3];
+    if (htMainUser.get(sUser) != null) {
+      iDeaths = (Integer[])htMainUser.get(sUser);
+      iHolder = iDeaths[iPos];
+      if (iHolder == null) { iHolder = new Integer(0); }
+      iDeaths[iPos] = new Integer(iHolder.intValue() + iKills);
+    } else {
+      iDeaths[iPos] = new Integer(iKills);
+    }
+    htMainUser.put(sUser,iDeaths);
+  }
 
-  Integer iDeaths[] = new Integer[3];
-  Integer iHolder = new Integer(0);
-  Integer iUser = new Integer(0);
-  Integer iOponent = new Integer(0);
+  //  Returns the kills for the current user
+  //
+  //  Written by    :   Stuart Butcher
+  //
+  //  Date          :   12th September 2002
+  //
+  //
+  private int getKills() {
+  int iReturn = 0;
+    for (Enumeration eWeapon = htWeapon.keys();eWeapon.hasMoreElements();) {
+      iWeapon = ((Integer)eWeapon.nextElement()).intValue();
+      iReturn += ((Integer)htWeapon.get(new Integer(iWeapon))).intValue();
+    }
+    return iReturn;
+  }
 
-  Vector vWeapons = new Vector();
-  Vector vOponent = new Vector();
-  Vector vTOponent = new Vector();
-  Vector vRows = new Vector();
-
-  Hashtable htPeople = new Hashtable();
-  Hashtable htPerson = new Hashtable();
-  Hashtable htWeapon = new Hashtable();
-  Hashtable htMainUser = new Hashtable();
-  Hashtable htHold = new Hashtable();
-  Hashtable htSort = new Hashtable();
-  Hashtable htScores = new Hashtable();
-  Hashtable htTags = new Hashtable();
-  Hashtable htHoldTotals = new Hashtable();
-
-  BufferedWriter bwOut;
-  BufferedWriter bwUser;
-
-  int iWeapon = 0;int iKills = 0;int iKill = 0;int iDeath = 0;int iTotalKills = 0;int iPercent = 0;int iStart = 0;
-  int iRank = 0;int iAbsTotFrags = 0;int iAbsTotKills = 0;int iAbsTotDeaths = 0;int iAbsTotSuicides = 0;int iCutOff = 0;
-  int iAbsTotRank = 0;int iAbsTotEfficiency = 0;int iAbsTotUsers = 0;int iTotKills = 0;int iTotDeaths = 0;
-  int[] iWeaponTotals;
-  float fKills;float fDeaths;float fSuicides;float fAbsTotKillRatio = 0;float fAbsTotUsers = 0;
-  
-    if ((prProp.get(PROPSTATIC) != null) && (!prProp.get(PROPSTATIC).equals(""))) { sStatic = (String)prProp.get(PROPSTATIC); }
-    else { throw new IllegalArgumentException("Static needs to be set in the config file"); }
-    if ((prProp.get(PROPTARGET) != null) && (!prProp.get(PROPTARGET).equals(""))) { sTarget = (String)prProp.get(PROPTARGET); }
-    if ((prProp.get(PROPCUTOFF) != null) && (!prProp.get(PROPCUTOFF).equals(""))) { iCutOff = new Integer((String)prProp.get(PROPCUTOFF)).intValue(); }
-
-    readStatic(sStatic);
- 
+  //  Builds up the main user details from the many hashtables
+  //
+  //  Written by    :   Stuart Butcher
+  //
+  //  Date          :   12th September 2002
+  //
+  //
+  private void buildUsers(String sOutDir,String sAdd,String sServer) throws IOException,IllegalArgumentException  {
     for (Enumeration eKills = htKills.keys();eKills.hasMoreElements();) {
+      htScoresInd = new Hashtable();
+      htHoldInd = new Hashtable();
       iUser = (Integer)eKills.nextElement();
       sUser = (String)htUsers.get(iUser);
       iTotalKills = 0;
@@ -898,29 +972,15 @@ private Properties prProp = new Properties(); // Properties read from the config
       iWeaponTotals = new int[sWeaponsList.length];
       htPeople = (Hashtable)htKills.get(iUser);
       vWeapons = new Vector();
-      vOponent = new Vector();
+      vOponentAbove = new Vector();
+      vOponentBelow = new Vector();
       vTOponent = new Vector();
       for (Enumeration ePeople = htPeople.keys();ePeople.hasMoreElements();) {
         iOponent = (Integer)ePeople.nextElement();
         sOponent = (String)htUsers.get(iOponent);
         if (sOponent.equals(sUser)) {
-          iKills = 0;
           htWeapon = (Hashtable)htPeople.get(iUser);
-          for (Enumeration eWeapon = htWeapon.keys();eWeapon.hasMoreElements();) {
-            iWeapon = ((Integer)eWeapon.nextElement()).intValue();
-            iKill = ((Integer)htWeapon.get(new Integer(iWeapon))).intValue();
-          }
-          if (htMainUser.get(sUser) != null) {
-            iDeaths = (Integer[])htMainUser.get(sUser);
-            iHolder = iDeaths[2];
-            if (iHolder == null) { iHolder = new Integer(0); }
-            iDeaths[2] = new Integer(iHolder.intValue() + iKills);
-            htMainUser.put(sUser,iDeaths);
-          } else {
-            iDeaths = new Integer[3];
-            iDeaths[2] = new Integer(iKills);
-            htMainUser.put(sUser,iDeaths);
-          }
+          addKills(sUser,getKills(),2);
         } else {
           vWeapons = new Vector();
           iKills = 0;
@@ -934,35 +994,22 @@ private Properties prProp = new Properties(); // Properties read from the config
             htTags = new Hashtable();
             htTags.put(TAGWEAPON,sWeapon);
             htTags.put(TAGKILLS,new Integer(iKill).toString());
-            vWeapons.add(getString(swapTags(vIndivWeap,htTags)));
+            vWeapons.add(swapTags(vIndivWeap,htTags));
           }
           if (sUser.equalsIgnoreCase(TXTSUICIDE)) {
-            if (htMainUser.get(sOponent) != null) {
-              iDeaths = (Integer[])htMainUser.get(sOponent);
-              iHolder = iDeaths[2];
-              if (iHolder == null) { iHolder = new Integer(0); }
-              iDeaths[2] = new Integer(iHolder.intValue() + iKills);
-              htMainUser.put(sOponent,iDeaths);
-            } else {
-              iDeaths = new Integer[3];
-              iDeaths[2] = new Integer(iKills);
-              htMainUser.put(sOponent,iDeaths);
-            }
+            addKills(sOponent,iKills,2);
           } else {
             iTotalKills += iKills;
             htPerson = (Hashtable)htKills.get(iOponent);
             if (htPerson != null) {
               htWeapon = (Hashtable)htPerson.get(iUser);
               if (htWeapon != null) { 
-                iDeath = 0;
-                for (Enumeration eWeapon = htWeapon.keys();eWeapon.hasMoreElements();) {
-                  iWeapon = ((Integer)eWeapon.nextElement()).intValue();
-                  iDeath += ((Integer)htWeapon.get(new Integer(iWeapon))).intValue();
-                }
+                iDeath = getKills();
               } else { iDeath = 0; }
             } else { iDeath = 0; }
             iTotKills += iKills;
             iTotDeaths += iDeath;
+            
             fKills = new Integer(iKills).floatValue();
             fDeaths = new Integer(iDeath).floatValue();
             iPercent = new Float((100 / (fKills + fDeaths)) * fKills).intValue();
@@ -972,31 +1019,15 @@ private Properties prProp = new Properties(); // Properties read from the config
             htTags.put(TAGDEATHS,new Integer(iDeath).toString());
             htTags.put(TAGEFFICIENCY,new Integer(iPercent).toString());
             htTags.put(TAGWEAPONS,getString(vWeapons));
-            vOponent.add(getString(swapTags(vIndivOpon,htTags)));
-            if (htMainUser.get(sOponent) != null) {
-              iDeaths = (Integer[])htMainUser.get(sOponent);
-              iHolder = iDeaths[1];
-              if (iHolder == null) { iHolder = new Integer(0); }
-              iDeaths[1] = new Integer(iHolder.intValue() + iKills);
-              htMainUser.put(sOponent,iDeaths);
-            } else {
-              iDeaths = new Integer[3];
-              iDeaths[1] = new Integer(iKills);
-              htMainUser.put(sOponent,iDeaths);
-            }
+            htHoldInd.put(sOponent,htTags);
+            if (htScoresInd.get(new Integer(iPercent)) != null) { htScoresInd.put(new Integer(iPercent),(String)htScoresInd.get(new Integer(iPercent)) + "," + sOponent); } 
+            else { htScoresInd.put(new Integer(iPercent),sOponent); }
+            addKills(sOponent,iKills,1);
           }
         }
       }
       if (!sUser.equalsIgnoreCase(TXTSUICIDE)) {
-        if (htMainUser.get(sUser) != null) {
-          iDeaths = (Integer[])htMainUser.get(sUser);
-          iDeaths[0] = new Integer(iTotalKills);
-          htMainUser.put(sUser,iDeaths);
-        } else {
-          iDeaths = new Integer[3];
-          iDeaths[0] = new Integer(iTotalKills);
-          htMainUser.put(sUser,iDeaths);
-        }
+        addKills(sUser,iTotalKills,0);
         fKills = new Integer(iTotKills).floatValue();
         fDeaths = new Integer(iTotDeaths).floatValue();
         iPercent = new Float((100 / (fKills + fDeaths)) * fKills).intValue();
@@ -1006,7 +1037,7 @@ private Properties prProp = new Properties(); // Properties read from the config
             htTags = new Hashtable();
             htTags.put(TAGWEAPON,sWeaponsList[iLoop]);
             htTags.put(TAGKILLS,new Integer(iWeaponTotals[iLoop]).toString());
-            vWeapons.add(getString(swapTags(vIndivTWea,htTags)));
+            vWeapons.add(swapTags(vIndivTWea,htTags));
           }
         }
         htTags = new Hashtable();
@@ -1014,22 +1045,37 @@ private Properties prProp = new Properties(); // Properties read from the config
         htTags.put(TAGDEATHS,new Integer(iTotDeaths).toString());
         htTags.put(TAGEFFICIENCY,new Integer(iPercent).toString());
         htTags.put(TAGWEAPONS,getString(vWeapons));
-        vTOponent.add(getString(swapTags(vIndivTOpo,htTags)));
+        vTOponent.add(swapTags(vIndivTOpo,htTags));
         htHoldTotals.put(sUser,getString(vTOponent));
-        htSort.put(sUser,getString(vOponent));
+        sortIndiv(sOutDir,sAdd,sServer);
+        htIndivAbove.put(sUser,getString(vOponentAbove));
+        htIndivBelow.put(sUser,getString(vOponentBelow));
       }
     }
+  }
+
+  //  Builds the main user table and writes it out
+  //
+  //  Written by    :   Stuart Butcher
+  //
+  //  Date          :   12th September 2002
+  //
+  //
+  private void buildTable(String sMiddle) throws IOException,IllegalArgumentException  {
+  Float[] fHold = new Float[6];
     for (Enumeration eUsers = htMainUser.keys();eUsers.hasMoreElements();) {
       sUser = (String)eUsers.nextElement();
       iDeaths = (Integer[])htMainUser.get(sUser);
       for (int iLoop = 0;iLoop < 3;iLoop++) { if (iDeaths[iLoop] == null) { iDeaths[iLoop] = new Integer(0); } }
+
       fKills = iDeaths[0].floatValue();
       fDeaths = iDeaths[1].floatValue();
       fSuicides = iDeaths[2].floatValue();
+      
       iPercent = new Float((100 / (fKills + fDeaths)) * (fKills - (fSuicides * 2))).intValue();
       sKillRatio = decimalPlaces(new Float(fKills / fDeaths).toString());
       iRank = new Float(fKills - fDeaths - fSuicides).intValue();
-      sLink = "<A HREF=\"" + sAdd + "/" + sServer + "_" + sUser + ".html\" TARGET=\"" + sTarget + "\">";
+      sLink = "<A HREF=\"" + sMiddle + "_" + sUser + ".html\" TARGET=\"" + sTarget + "\">";
       
       htTags = new Hashtable();
       htTags.put(TAGUSERLINK,sLink);
@@ -1041,7 +1087,7 @@ private Properties prProp = new Properties(); // Properties read from the config
       htTags.put(TAGRANK,new Integer(iRank).toString());
       htTags.put(TAGEFFICIENCY,new Integer(iPercent).toString());
       
-      htHold.put(sUser,getString(swapTags(vTableRows,htTags)));
+      htHold.put(sUser,htTags);
       iAbsTotFrags += iDeaths[0].intValue();
       if (iDeaths[0].intValue() + iDeaths[1].intValue() + iDeaths[2].intValue() >= iCutOff) {
         iAbsTotKills += iDeaths[0].intValue();
@@ -1055,49 +1101,116 @@ private Properties prProp = new Properties(); // Properties read from the config
         else { htScores.put(new Integer(iPercent),sUser); }
       }
     }
+  }
+
+  //  Sorts the users and writes out the users individual files
+  //
+  //  Written by    :   Stuart Butcher
+  //
+  //  Date          :   12th September 2002
+  //
+  //
+  private void sortUsers() throws IllegalArgumentException  {
+  int iCount = 0;
+  boolean bHold = false;
+  Vector vHoldMe = new Vector();
     for (int iLoop = 100;iLoop > -1;iLoop--) {
       if (htScores.get(new Integer(iLoop)) != null) {
+        iCount++;
         sUser = (String)htScores.get(new Integer(iLoop));
         if (sUser.indexOf(",") < 0) { 
-          vRows.add((String)htHold.get(sUser));
-          if (htSort.get(sUser) != null) { 
-            sFile = sOutDir + sAdd + "/" + sServer + "_" + sUser + ".html";
-            makeDirs(sOutDir + sAdd);
-            bwUser = new BufferedWriter(new FileWriter(sFile));
-            htTags = new Hashtable();
-            htTags.put(TAGUSER,sUser);
-            htTags.put(TAGOPONENTS,(String)htSort.get(sUser));
-            htTags.put(TAGTOTALS,(String)htHoldTotals.get(sUser));
-            bwUser.write(getString(swapTags(vIndivMain,htTags)));
-            bwUser.close();
-          }
+          htTags = (Hashtable)htHold.get(sUser);
+          htTags.put(TAGMEMBER,new Integer(iCount).toString());
+          if (iLoop < iAbsTotEfficiency) { vRowsBelow.add(swapTags(vTableRowsBelow,htTags)); }
+          else { vRowsAbove.add(swapTags(vTableRowsAbove,htTags)); }
         } else {
+          bHold = false;
           while (sUser.length() > 0) {
             iStart = sUser.indexOf(",");
-            if (iStart == -1) { 
-              sHold = sUser.substring(0); 
-              sUser = "";
-            } else { 
-              sHold = sUser.substring(0,iStart); 
-              sUser = sUser.substring(iStart + 1);
-            }
-            vRows.add((String)htHold.get(sHold));
-            if (htSort.get(sHold) != null) { 
-              sFile = sOutDir + sAdd + "/" + sServer + "_" + sHold + ".html";
-              makeDirs(sOutDir + sAdd);
-              bwUser = new BufferedWriter(new FileWriter(sFile));
-              htTags = new Hashtable();
-              htTags.put(TAGUSER,sHold);
-              htTags.put(TAGOPONENTS,(String)htSort.get(sHold));
-              htTags.put(TAGTOTALS,(String)htHoldTotals.get(sHold));
-              bwUser.write(getString(swapTags(vIndivMain,htTags)));
-
-              bwUser.close();
-            }
+            if (iStart == -1) { sHold = sUser.substring(0); sUser = ""; } 
+            else { sHold = sUser.substring(0,iStart); sUser = sUser.substring(iStart + 1); }
+            htTags = (Hashtable)htHold.get(sHold);
+            if (!bHold) { htTags.put(TAGMEMBER,new Integer(iCount).toString()); }
+            else { htTags.put(TAGMEMBER,"-"); iCount++; }
+            if (iLoop < iAbsTotEfficiency) { vRowsBelow.add(swapTags(vTableRowsBelow,htTags)); }
+            else { vRowsAbove.add(swapTags(vTableRowsAbove,htTags)); }
+            bHold = true;
           }
         }
       }
     }
+  }
+
+  //  Sorts the users individual stats
+  //
+  //  Written by    :   Stuart Butcher
+  //
+  //  Date          :   12th September 2002
+  //
+  //
+  private void sortIndiv(String sOutDir,String sAdd,String sServer) throws IOException,IllegalArgumentException  {
+  int iCount = 0;
+  boolean bHold = false;
+  Vector vHoldMe = new Vector();
+  String sHoldUser = new String();
+    for (int iLoop = 100;iLoop > -1;iLoop--) {
+      if (htScoresInd.get(new Integer(iLoop)) != null) {
+        iCount++;
+        sHoldUser = (String)htScoresInd.get(new Integer(iLoop));
+        if (sHoldUser.indexOf(",") < 0) { 
+          htTags = (Hashtable)htHoldInd.get(sHoldUser);
+          htTags.put(TAGMEMBER,new Integer(iCount).toString());
+          if (iLoop < iPercent) { vOponentBelow.add(swapTags(vIndivOponBelow,htTags)); }
+          else { vOponentAbove.add(swapTags(vIndivOponAbove,htTags)); }
+        } else {
+          bHold = false;
+          while (sHoldUser.length() > 0) {
+            iStart = sHoldUser.indexOf(",");
+            if (iStart == -1) { sHold = sHoldUser.substring(0); sHoldUser = ""; } 
+            else { sHold = sHoldUser.substring(0,iStart); sHoldUser = sHoldUser.substring(iStart + 1); }
+            htTags = (Hashtable)htHoldInd.get(sHold);
+            if (!bHold) { htTags.put(TAGMEMBER,new Integer(iCount).toString()); }
+            else { htTags.put(TAGMEMBER,"-"); iCount++; }
+            if (iLoop < iPercent) { vOponentBelow.add(swapTags(vIndivOponBelow,htTags)); }
+            else { vOponentAbove.add(swapTags(vIndivOponAbove,htTags)); }
+            bHold = true;
+          }
+        }
+      }
+    }
+  }
+
+  //  Writes out the individual user pages
+  //
+  //  Written by    :   Stuart Butcher
+  //
+  //  Date          :   12th September 2002
+  //
+  //
+  private void writeUsers(String sOutDir,String sAdd,String sServer) throws IOException {
+    for (Enumeration eUsers = htIndivAbove.keys();eUsers.hasMoreElements();) {
+      sHold = (String)eUsers.nextElement();
+      sFile = sOutDir + sAdd + "/" + sServer + "_" + sHold + ".html";
+      makeDirs(sOutDir + sAdd);
+      bwUser = new BufferedWriter(new FileWriter(sFile));
+      htTags = new Hashtable();
+      htTags.put(TAGUSER,sHold);
+      htTags.put(TAGABOVE,(String)htIndivAbove.get(sHold));
+      htTags.put(TAGBELOW,(String)htIndivBelow.get(sHold));
+      htTags.put(TAGTOTALS,(String)htHoldTotals.get(sHold));
+      bwUser.write(swapTags(vIndivMain,htTags));
+      bwUser.close();
+    }
+  }
+  
+  //  Builds the totals row for the main table
+  //
+  //  Written by    :   Stuart Butcher
+  //
+  //  Date          :   12th September 2002
+  //
+  //
+  private void makeTotals() {
     fKills = new Float(iAbsTotKills).floatValue();
     fDeaths = new Float(iAbsTotDeaths).floatValue();
     fSuicides = new Float(iAbsTotSuicides).floatValue();
@@ -1108,7 +1221,6 @@ private Properties prProp = new Properties(); // Properties read from the config
     iAbsTotEfficiency = new Float(iAbsTotEfficiency / iAbsTotUsers).intValue();
     sAbsTotKillRatio = decimalPlaces(new Float(fAbsTotKillRatio / iAbsTotUsers).toString());
     iAbsTotRank = new Float(iAbsTotRank / iAbsTotUsers).intValue();
-
     htTags = new Hashtable();
     htTags.put(TAGKILLS,new Integer(iAbsTotKills).toString());
     htTags.put(TAGDEATHS,new Integer(iAbsTotDeaths).toString());
@@ -1116,18 +1228,60 @@ private Properties prProp = new Properties(); // Properties read from the config
     htTags.put(TAGKILLRATIO,sKillRatio);
     htTags.put(TAGRANK,new Integer(iAbsTotRank).toString());
     htTags.put(TAGEFFICIENCY,new Integer(iAbsTotEfficiency).toString());
-    sTotals = getString(swapTags(vTableTRow,htTags));
+    sTotals = swapTags(vTableTRow,htTags);
+  }
+
+  //  Writes out the main page from the template into the bw passed in
+  //
+  //  Written by    :   Stuart Butcher
+  //
+  //  Date          :   12th September 2002
+  //
+  //
+  private void writeMain(BufferedWriter bwOut) throws IOException,IllegalArgumentException {
+    htTags = new Hashtable();
+    htTags.put(TAGTITLE,sTitle);
+    htTags.put(TAGFRAGS,new Integer(iAbsTotFrags).toString());
+    htTags.put(TAGABOVE,getString(vRowsAbove));
+    htTags.put(TAGBELOW,getString(vRowsBelow));
+    htTags.put(TAGTOTALS,sTotals);
+    bwOut.write(swapTags(vTableMain,htTags));
+  }
+
+  //  Outputs stats files based on the current kill hashtable
+  //
+  //  Written by    :   Stuart Butcher
+  //
+  //  Date          :   12th September 2002
+  //
+  //
+  protected void outputLog(String sOutDir,String sServer,String sAdd) throws IOException,IllegalArgumentException {
+  sWeaponsList = getWeaponsList(sAdd);
+  sType = getType(sAdd);
+  sTitle = new String("Quake 3 Arena - " + sType + " Stats (" + sServer + ")");
+
+    if ((prProp.get(PROPSTATIC) != null) && (!prProp.get(PROPSTATIC).equals(""))) { sStatic = (String)prProp.get(PROPSTATIC); }
+    else { throw new IllegalArgumentException("Static needs to be set in the config file"); }
+    if ((prProp.get(PROPTARGET) != null) && (!prProp.get(PROPTARGET).equals(""))) { sTarget = (String)prProp.get(PROPTARGET); }
+    if ((prProp.get(PROPCUTOFF) != null) && (!prProp.get(PROPCUTOFF).equals(""))) { iCutOff = new Integer((String)prProp.get(PROPCUTOFF)).intValue(); }
+
+    readStatic();
+
+    buildUsers(sOutDir,sAdd,sServer);
+    
+    buildTable(sAdd + "/" + sServer);
+
+    makeTotals();
+
+    sortUsers();
+
+    writeUsers(sOutDir,sAdd,sServer);
 
     makeDirs(sOutDir);
     bwOut = new BufferedWriter(new FileWriter(sOutDir + sServer + "_" + sAdd + ".html"));
 
-    htTags = new Hashtable();
-    htTags.put(TAGTITLE,sTitle);
-    htTags.put(TAGFRAGS,new Integer(iAbsTotFrags).toString());
-    htTags.put(TAGROWS,getString(vRows));
-    htTags.put(TAGTOTALS,sTotals);
-    bwOut.write(getString(swapTags(vTableMain,htTags)));
-
+    writeMain(bwOut);
+    
     bwOut.close();
   }
 
@@ -1202,16 +1356,18 @@ private Properties prProp = new Properties(); // Properties read from the config
   public void startOutput(String sInput,String sOutDir,String sServer,String sType) throws IllegalArgumentException,FileNotFoundException,IOException {
   String[] aInput = sInput.split(PATHSEP);
   File fInput;
+  boolean bOutput = true;
     htKills = new Hashtable();
     if (checkType(sType)) {
       for (int iLoop = 0;iLoop < aInput.length;iLoop++) {
         fInput = new File(aInput[iLoop]);
         if ((fInput.exists()) && (fInput.isFile())) {
-          if (getLog(aInput[iLoop],false)) { outputLog(sOutDir,sServer,sType); }
+          if (!getLog(aInput[iLoop],false)) { bOutput = false; }
         } else {
           throw new IllegalArgumentException("File " + aInput[iLoop] + " doesn't exist");
         }
       }
+      if (bOutput) { outputLog(sOutDir,sServer,sType); }
     } else {
       throw new IllegalArgumentException("Invalid Type - " + sType);
     }
@@ -1264,7 +1420,7 @@ private Properties prProp = new Properties(); // Properties read from the config
   String sAction = new String();
   Q3Log myLog = new Q3Log();
   IllegalArgumentException eIAETest = new IllegalArgumentException();
-    sHelp = "Q3Log v1.3 - Quake 3 Arena Stats Generator" + LINESEP + LINESEP +
+    sHelp = PROGFULL + " v" + PROGVER + " - " + PROGDESC + LINESEP + LINESEP +
             "The following options are valid:" + LINESEP +
             "   help" + LINESEP +
             "   parse Config LogName[@LogName@...] InputName Delete" + LINESEP +

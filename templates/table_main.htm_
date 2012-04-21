@@ -2,11 +2,13 @@
 <HEAD>
 </HEAD>
 <BODY BGCOLOR="BLACK" TEXT="LIGHTBLUE">
+<LINK REL=stylesheet TYPE="text/css" HREF="main.css" TITLE="Main Style Sheet">
 <CENTER>
 <H1><Q3LOG TYPE="Value" NAME="Title"></H1>
 <H2>Overall Results (<Q3LOG TYPE="Value" NAME="Frags"> Frags)</H2>
 <TABLE WIDTH=50% BORDERCOLORDARK=GRAY BORDERCOLORLIGHT=WHITE BORDER=1>
   <TR>
+    <TH>Place</TH>
     <TH>User</TH>
     <TH>Kills</TH>
     <TH>Deaths</TH>
@@ -15,12 +17,19 @@
     <TH>Rank</TH>
     <TH>Efficiency</TH>
   </TR>
-<Q3LOG TYPE="Section" NAME="Rows">
+<Q3LOG TYPE="Section" NAME="Above">
+<Q3LOG TYPE="Section" NAME="Below">
 <Q3LOG TYPE="Section" NAME="Totals">
 </TABLE>
 <BR>
 <BR>
-<H5>Last Updated - <Q3LOG TYPE="System" NAME="Time"> <Q3LOG TYPE="System" NAME="Date">
+<H5>
+Last Updated - <Q3LOG TYPE="System" NAME="Time"> <Q3LOG TYPE="System" NAME="Date">
+<BR>
+Created Using - <A HREF="<Q3LOG TYPE="System" NAME="ProgURL">" TARGET="_blank"><Q3LOG TYPE="System" NAME="ProgFull"></A>
+<BR>
+<A HREF="<Q3LOG TYPE="System" NAME="ProgURL"><Q3LOG TYPE="System" NAME="ProgName"><Q3LOG TYPE="System" NAME="ProgVer">.zip" TARGET="_blank">Download</A>
+</H5>
 </CENTER>
 </BODY>
 </HTML>

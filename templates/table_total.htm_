@@ -1,9 +1,0 @@
-  <TR>
-    <TH>Averages</TH>
-    <TD ALIGN=RIGHT><Q3LOG TYPE="Value" NAME="Kills"></TD>
-    <TD ALIGN=RIGHT><Q3LOG TYPE="Value" NAME="Deaths"></TD>
-    <TD ALIGN=RIGHT><Q3LOG TYPE="Value" NAME="Suicides"></TD>
-    <TD ALIGN=RIGHT><Q3LOG TYPE="Value" NAME="KillRatio"></TD>
-    <TD ALIGN=RIGHT><Q3LOG TYPE="Value" NAME="Rank"></TD>
-    <TD ALIGN=RIGHT><Q3LOG TYPE="Value" NAME="Efficiency">%</TD>
-  </TR>
