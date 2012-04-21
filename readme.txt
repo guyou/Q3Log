@@ -1,4 +1,4 @@
-Q3Log v1.5 ReadMe
+Q3Log v2.0 ReadMe
 =================
 
 (Copyright Stuart Butcher <stu@wilf.co.uk> 2002)
@@ -10,9 +10,10 @@ Contents:
 2.  New Features
 3.  Installation
 4.  Usage
-5.  Future Enhancements/Bugs
-6.  Distribution
-7.  Feedback
+5.  Valid Template Tags
+6.  Future Enhancements/Bugs
+7.  Distribution
+8.  Feedback
 
 ------------------------------------------------------------------------------
 
@@ -28,9 +29,12 @@ It is written entirely in Java, and should work with Java 2 (1.4) and higher.  A
 2.  New Features
 ================
 
-  - New templates added to allow spliting of tables into those above and those below average
-  - New System tag values added
-  - Slight reworking of code into more functions to make it easier to follow
+  - The option now exists to write out multiple files sorted on different totals so the user can view each one
+      (this is turned off by default, edit the conf file to turn it on)
+  - Several new classes created to contain existing code in more structured way
+  - LogTotals class created to hold the user totals
+  - Individual user pages are only written if the user qualifies to be on the main page now
+  - Sorting mechanism vastly improved (although not sure if its quicker or slower than old version)
 
 3.  Installation
 ================
@@ -70,21 +74,152 @@ If you want to customise the output you will need to edit the following files (i
   indiv_weapons.htm_        - the details of weapons used for each individual user
   indiv_weapons_total.htm_  - the totals for the weapons used for each individual user
 
-All 'Value' tags in these files get replaced by their relevant value.  All 'Section' tags get replaced by the relevant section.  Valid 'System' values are:
+5.  Valid Template Tags
+=======================
 
-  Date      - the date the output files were generated
-  Time      - the time the output files were generated
-  ProgName  - the name of the program used to generate the log files (Q3Log)
-  ProgVer   - the version of the program used to generate the log files
-  ProgDesc  - short description of the program used to generate the log files
-  ProgFull  - the 3 above parameters put into a meaningfull string
-  ProgURL   - the homepage of the program used to generate the log files
+Tags have different values in different pages.  The following lists all possible combinations:
+
+  table_main.htm_ -
+  
+                    Value Tags
+                    ----------
+                    Title       = The title of the page
+                    Frags       = Total number of frags on the server
+                    Users       = Total number of users on the server
+                    Up          = The image for the up arrow
+                    Down        = The image for the down arrow
+                    Close       = Link closing tag (if link is valid)
+                    
+                    Pass Tags
+                    ---------
+                    LinkUp      = The href of this page sorted by the 
+                                  passed in column upwards
+                    LinkDown    = The href of this page sorted by the 
+                                  passed in column downwards
+                    
+                    Section Tags
+                    ------------
+                    Above       = table_row_above.htm_ repeated once for 
+                                  each user above average
+                    Below       = table_row_below.htm_ repeated once for 
+                                  each user below average
+                    Totals      = The averages for the main table 
+                                  (table_row_total.htm_)
+
+  table_row_above.htm_ & table_row_below.htm_ -
+  
+                    Value Tags
+                    ----------
+                    Member      = This users table place
+                    User_Link   = The HREF to the individual user page for 
+                                  this user
+                    User        = The username for this user
+                    Kills       = The total number of kills for this user
+                    Deaths      = The total number of deaths for this user
+                    Suicides    = The total number of suicides for this user
+                    KillRatio   = The kill ratio for this user
+                    Rank        = The rank for this user
+                    Efficiency  = The efficiency for this user
+
+  table_row_total.htm_ - 
+
+                    Value Tags
+                    ----------
+                    Kills       = The average number of kills for this server
+                    Deaths      = The average number of deaths for this server
+                    Suicides    = The average number of suicides for this server
+                    KillRatio   = The average kill ratio for this server
+                    Rank        = The average rank for this server
+                    Efficiency  = The average efficiency for this server
+
+  indiv_main.htm_ -
+                    
+                    Value Tags
+                    ----------
+                    User        = The username for this user
+                    Up          = The image for the up arrow
+                    Down        = The image for the down arrow
+                    Close       = Link closing tag (if link is valid)
+                    
+                    
+                    Pass Tags
+                    ---------
+                    LinkUp      = The href of this page sorted by the passed 
+                                  in column upwards
+                    LinkDown    = The href of this page sorted by the passed 
+                                  in column downwards
+                    
+                    Section Tags
+                    ------------
+                    Above       = indiv_oponents_above.htm_ repeated once for 
+                                  each oponent above average
+                    Below       = indiv_oponents_below.htm_ repeated once for 
+                                  each oponent below average
+                    Totals      = The averages for this user 
+                                  (indiv_oponents_total.htm_)
+
+  indiv_oponents_above.htm_ & indiv_oponents_below.htm_ -
+                    
+                    Value Tags
+                    ----------
+                    Member      = This oponents table place
+                    Oponent     = The opononts username
+                    Kills       = The total number of kills against this oponent
+                    Deaths      = The total number of deaths against this oponent
+                    Efficiency  = The efficiency against this oponent
+                    
+                    Section Tags
+                    ------------
+                    Weapons     = indiv_weapons.htm_ repeated once for each type 
+                                  of weapon used to kill this oponent
+
+  indiv_oponents_total.htm_ -
+                    
+                    Value Tags
+                    ----------
+                    Kills       = The average number of kills for this user
+                    Deaths      = The average number of deaths for this user
+                    Efficiency  = The average efficiency for this user                                                              
+                    Section Tags
+                    ------------
+                    Weapons     = indiv_weapons_total.htm_ repeated once for each 
+                                  type of weapon used by this user
+
+  indiv_weapons.htm_ -
+  
+                    Value Tags
+                    ----------
+                    Weapon      = The name of this weapon
+                    Kills       = Total number of kills with this weapon against 
+                                  this oponent
+  
+  indiv_weapons_total.htm_ -
+  
+                    Value Tags
+                    ----------
+                    Weapon      = The name of this weapon
+                    Kills       = Total number of kills with this weapon for this 
+                                  user
+  
+  All Pages -
+                    System Tages
+                    ------------
+                    Date        = the date the output files were generated
+                    Time        = the time the output files were generated
+                    ProgName    = the name of the program used to generate the log 
+                                  files (Q3Log)
+                    ProgVer     = the version of the program used to generate the log 
+                                  files
+                    ProgDesc    = short description of the program used to generate the 
+                                  log files
+                    ProgFull    = the 3 above parameters put into a meaningfull string
+                    ProgURL     = the homepage of the program used to generate the log 
+                                  files
 
 5.  Future Enhancements
 =======================
 
- - Output multiple main pages allowing for sorting based on any of the columns
- - Output multiple individual pages allowing for sorting based on any of the columns
+No future enhancements currently planned.
  
 If you have any suggestions or requests e-mail me at q3logger@wilf.co.uk.
 
