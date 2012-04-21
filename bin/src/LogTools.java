@@ -80,19 +80,28 @@ public static final String DIRSEP = System.getProperty("file.separator"); // The
   //  Date          :   12th September 2002
   //
   //
-  public String stripChars(String sUser) {
-  String sBefore = new String();
+  public String stripChars(String sUser,String[] aColours) {
+  String sRep;
   String sAfter = new String();
-  int iStart = 0;
-    while (sUser.indexOf('^') > -1) {
-      iStart = sUser.indexOf('^');
-      if (iStart > 0) { sBefore = sUser.substring(0,iStart); }
-      iStart = iStart + 2;
-      sAfter = sUser.substring(iStart);
-      sUser = sBefore + sAfter;
+  String sBefore = new String("<FONT COLOR=\"");
+  String sMiddle = new String("\">");
+    sUser = replaceAll(sUser,"<","(");
+    sUser = replaceAll(sUser,">",")");
+    sUser = replaceAll(sUser,"*","_");
+    sUser = replaceAll(sUser,"?","_");
+    sUser = replaceAll(sUser,"|","_");
+    sUser = replaceAll(sUser,":","_");
+    sUser = replaceAll(sUser,"\\","_");
+    sUser = replaceAll(sUser,"/","_");
+    sUser = replaceAll(sUser,"\"","_");
+    for (int iLoop = 0;iLoop < 10;iLoop++) {
+      if ((aColours != null) && (aColours.length > iLoop)) { sRep = sBefore + aColours[iLoop] + sMiddle;sAfter = "</FONT>"; }
+      else { sRep = new String(); }
+      sUser = replaceAll(sUser,"^" + iLoop,sRep);
     }
-    return sUser.replaceAll("<","(").replaceAll(">",")").replaceAll("\\*","_").replaceAll("\\?","_").replaceAll("\\|","!");
+    return sUser + sAfter;
   }
+  public String stripChars(String sUser) { return stripChars(sUser,new String[0]); }
   
   //  Makes sure the directory passed exists
   //
@@ -186,6 +195,8 @@ public static final String DIRSEP = System.getProperty("file.separator"); // The
   }
 
   //  Replaces all occurances of sReplace in sMain with sWith (like String.replaceAll but without regexp)
+  //  This is not just here to make this program work with Java 2 1.2.2 or later.  It is used when regexp
+  //  is an annoyance.
   //
   //  Written by    :   Stuart Butcher
   //
@@ -263,7 +274,7 @@ public static final String DIRSEP = System.getProperty("file.separator"); // The
       if (!sOld.equals(sUser)) { iNumber = 0; }
       sOld = sUser;
       if (sUser.indexOf("*") > -1) {
-        aUser = sUser.split("\\*");
+        aUser = split(sUser,"*");
         sUser = aUser[iNumber];
         iNumber++;
       } else {
@@ -273,6 +284,48 @@ public static final String DIRSEP = System.getProperty("file.separator"); // The
       vReturn.add(sUser);
     }
     return vReturn;
+  }
+
+  // Function to return an array from a string broken up by a splitting string
+  //  This is only here to make this program work with Java 2 1.2.2 and later
+  //  If you have Java 2 1.4 or later and want to use the String.split function,
+  //  feel free
+  //
+  // Written by       :   Stuart Butcher
+  //
+  // Date             :   4th August 2002
+  //
+  // Written for      :   GSK
+  //
+  public static String[] split(String sCheck,String sChar) {
+  String[] aReturn;
+  ArrayList lReturn = new ArrayList();
+  int iPos,iPos2;
+    // Make sure we have a list
+    iPos = sCheck.indexOf(sChar);
+    if (iPos > -1) {  
+      // We have a list so start adding terms to it
+      lReturn.add(sCheck.substring(0,iPos));
+      while (iPos > -1) { // Loop through all occurances
+        // Get the end of the term
+        iPos2 = sCheck.indexOf(sChar,iPos + 1);
+        // If we are at the end, then set ourselves to the last position
+        if (iPos2 == -1) { iPos2 = sCheck.length(); }
+        // Add the term
+        lReturn.add(sCheck.substring(iPos + 1,iPos2));
+        // Get the next occurance
+        iPos = sCheck.indexOf(sChar,iPos + 1);
+      }
+    } else { 
+      // We dont have a list so return just sCheck
+      lReturn.add(sCheck); 
+    } 
+    aReturn = new String[lReturn.size()];
+    for (int iLoop = 0;iLoop < lReturn.size();iLoop++) {
+      aReturn[iLoop] = (String)lReturn.get(iLoop);
+    }
+    // Return
+    return aReturn;
   }
 
 }

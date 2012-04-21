@@ -27,7 +27,7 @@ public class Q3Log {
 */
 
 // The program version
-public static final String PROGVER = new String("2.0"); 
+public static final String PROGVER = new String("2.1"); 
 // The programs name
 public static final String PROGNAME = new String("Q3Log"); 
 // The programs description
@@ -135,7 +135,7 @@ public static final String[] TXTUT3WEAPONS = {
   "SR8",
   "Unknown - 29",
   "Unknown - 30",
-}; 
+};
 // The next few lines are creating the tool objects needed by Q3Log
 private LogTools myTools = new LogTools();
 private LogParser myParser = new LogParser();
@@ -187,6 +187,17 @@ public static final String PROPTITLE4 = new String("Title4"); // The text for Ra
 public static final String PROPTITLE5 = new String("Title5"); // The text for Ratio (for conf file)
 public static final String PROPTITLEBEFORE = new String("SortTitleBefore"); // The text that goes before the sorted title (for conf file)
 public static final String PROPTITLEAFTER = new String("SortTitleAfter"); // The text that goes after the sorted title (for conf file)
+public static final String PROPIGNORE = new String("Ignore"); // List of users to ignore (for conf file)
+public static final String PROPIGNORESPLIT = new String("Split"); // The string used to split up the userlist for Ignore (for conf file)
+public static final String PROPCOLOURS = new String("Colours"); // Output user colours (for conf file)
+public static final String PROPBLACK = new String("Black"); // Colour for fun names
+public static final String PROPRED = new String("Red"); // Colour for fun names
+public static final String PROPGREEN = new String("Green"); // Colour for fun names
+public static final String PROPYELLOW = new String("Yellow"); // Colour for fun names
+public static final String PROPBLUE = new String("Blue"); // Colour for fun names
+public static final String PROPCYAN = new String("Cyan"); // Colour for fun names
+public static final String PROPMAGENTA = new String("Magenta"); // Colour for fun names
+public static final String PROPWHITE = new String("White"); // Colour for fun names
 
 public static final String TAGVALUE = "VALUE"; // Type of Tag that is replace by a value
 public static final String TAGSECTION = "SECTION"; // Type of Tag that is replaced by another file
@@ -265,9 +276,12 @@ private String sAdd = new String(); // Additional link info
 private String sTitle = new String(); // The title of the mainpage
 private String sSortUp = new String(); // The Img representing sort up
 private String sSortDown = new String(); // The Img representing sort down
-private String[] sTitles = new String[6]; // The titles
 private String sTitleBefore = new String(); // The text to go before the sorted title
 private String sTitleAfter = new String(); // The text to go after the sorted title
+private String sIgnore = new String(); // The ignore list of usernames
+private String sIgnoreSplit = new String(); // The split character for the ignore list
+private String[] sTitles = new String[6]; // The titles
+private String[] aColours = new String[8]; // The colours for fun names
 
 // The following Vectors hold the lines to be replaced in the template files
 private Vector vWeapons = new Vector();
@@ -284,6 +298,7 @@ private Hashtable htTags = new Hashtable();
 private Hashtable htHoldTotals = new Hashtable();
 private Hashtable htSort = new Hashtable();
 private Hashtable htSortInd = new Hashtable();
+private Hashtable htFun = new Hashtable();
 
 // The following int's hold value from the conf file
 private int iCutOff = 0;
@@ -292,6 +307,8 @@ private int iAllSort = 0;
 
 // The direction to sort in (from the conf file)
 private boolean bDirect = false;
+// Output user colours (from the conf file)
+private boolean bColours = true;
 
   //  Constructer for the class
   //
@@ -382,36 +399,34 @@ private boolean bDirect = false;
       bReturn = true;
       if (myTools.checkString((String)prProp.get(PROPSTATIC))) { sStatic = (String)prProp.get(PROPSTATIC); }
       else { throw new IllegalArgumentException("Static needs to be set in the config file"); }
-      if (myTools.checkString((String)prProp.get(PROPTARGET))) { sTarget = (String)prProp.get(PROPTARGET); }
-      else { sTarget = new String("_blank"); }
-      if (myTools.checkString((String)prProp.get(PROPCUTOFF))) { iCutOff = new Integer((String)prProp.get(PROPCUTOFF)).intValue(); }
-      else { iCutOff = 0; }
-      if (myTools.checkString((String)prProp.get(PROPSORT))) { iSort = new Integer((String)prProp.get(PROPSORT)).intValue(); }
-      else { iSort = 2; }
-      if (myTools.checkString((String)prProp.get(PROPDIRECT))) { bDirect = new Boolean((String)prProp.get(PROPDIRECT)).booleanValue(); }
-      else { bDirect = true; }
-      if (myTools.checkString((String)prProp.get(PROPALLSORT))) { iAllSort = new Integer((String)prProp.get(PROPALLSORT)).intValue(); }
-      else { iAllSort = 0; }
+      sTarget = prProp.getProperty(PROPTARGET,"_blank");
+      iCutOff = new Integer(prProp.getProperty(PROPCUTOFF,"0")).intValue();
+      iSort = new Integer(prProp.getProperty(PROPSORT,"2")).intValue();
+      bDirect = new Boolean(prProp.getProperty(PROPDIRECT,"true")).booleanValue();
+      iAllSort = new Integer(prProp.getProperty(PROPALLSORT,"0")).intValue();
       if (myTools.checkString((String)prProp.get(PROPSORTUP))) { sSortUp = IMGBEFORE + (String)prProp.get(PROPSORTUP) + IMGAFTER; }
       else { sSortUp = new String(); }
       if (myTools.checkString((String)prProp.get(PROPSORTDOWN))) { sSortDown = IMGBEFORE + (String)prProp.get(PROPSORTDOWN) + IMGAFTER; }
       else { sSortDown = new String(); }
-      if (myTools.checkString((String)prProp.get(PROPTITLE0))) { sTitles[0] = (String)prProp.get(PROPTITLE0); }
-      else { sTitles[0] = new String(); }
-      if (myTools.checkString((String)prProp.get(PROPTITLE1))) { sTitles[1] = (String)prProp.get(PROPTITLE1); }
-      else { sTitles[1] = new String(); }
-      if (myTools.checkString((String)prProp.get(PROPTITLE2))) { sTitles[2] = (String)prProp.get(PROPTITLE2); }
-      else { sTitles[2] = new String(); }
-      if (myTools.checkString((String)prProp.get(PROPTITLE3))) { sTitles[3] = (String)prProp.get(PROPTITLE3); }
-      else { sTitles[3] = new String(); }
-      if (myTools.checkString((String)prProp.get(PROPTITLE4))) { sTitles[4] = (String)prProp.get(PROPTITLE4); }
-      else { sTitles[4] = new String(); }
-      if (myTools.checkString((String)prProp.get(PROPTITLE5))) { sTitles[5] = (String)prProp.get(PROPTITLE5); }
-      else { sTitles[5] = new String(); }
-      if (myTools.checkString((String)prProp.get(PROPTITLEBEFORE))) { sTitleBefore = (String)prProp.get(PROPTITLEBEFORE); }
-      else { sTitleBefore = new String(); }
-      if (myTools.checkString((String)prProp.get(PROPTITLEAFTER))) { sTitleAfter = (String)prProp.get(PROPTITLEAFTER); }
-      else { sTitleAfter = new String(); }
+      sTitles[0] = prProp.getProperty(PROPTITLE0,new String());
+      sTitles[1] = prProp.getProperty(PROPTITLE1,new String());
+      sTitles[2] = prProp.getProperty(PROPTITLE2,new String());
+      sTitles[3] = prProp.getProperty(PROPTITLE3,new String());
+      sTitles[4] = prProp.getProperty(PROPTITLE4,new String());
+      sTitles[5] = prProp.getProperty(PROPTITLE5,new String());
+      sTitleBefore = prProp.getProperty(PROPTITLEBEFORE,new String());
+      sTitleAfter = prProp.getProperty(PROPTITLEAFTER,new String());
+      sIgnore = prProp.getProperty(PROPIGNORE,new String());
+      sIgnoreSplit = prProp.getProperty(PROPIGNORESPLIT,";");
+      bColours = new Boolean(prProp.getProperty(PROPCOLOURS,"true")).booleanValue();
+      aColours[0] = prProp.getProperty(PROPBLACK,"Black");
+      aColours[1] = prProp.getProperty(PROPRED,"Red");
+      aColours[2] = prProp.getProperty(PROPGREEN,"Green");
+      aColours[3] = prProp.getProperty(PROPYELLOW,"Yellow");
+      aColours[4] = prProp.getProperty(PROPBLUE,"Blue");
+      aColours[5] = prProp.getProperty(PROPCYAN,"Cyan");
+      aColours[6] = prProp.getProperty(PROPMAGENTA,"Magenta");
+      aColours[7] = prProp.getProperty(PROPWHITE,"White");
     }
     return bReturn; 
   }
@@ -425,8 +440,14 @@ private boolean bDirect = false;
   //
   private boolean getLog(String sFile,boolean bClear) throws FileNotFoundException,IOException {
   boolean bReturn = false;
+  String[] aIgnore;
+    if (myTools.checkString(sIgnore)) {
+      aIgnore = myTools.split(sIgnore,sIgnoreSplit);
+      myParser.setIgnore(aIgnore);
+    }
     htKills = myParser.readLog(sFile,bClear);
     htUsers = myParser.getUsers();
+    htFun = myParser.getFun();
     bReturn = true;
     return bReturn;
   }
@@ -560,11 +581,11 @@ private boolean bDirect = false;
         } else if (sType.equals(TAGSYSTEM)) {
           sValue = getSysVal(sName);
         } else {
-          sValue = sTag.replaceAll(OPENTAG,FAKEOPENTAG);
+          sValue = myTools.replaceAll(sTag,OPENTAG,FAKEOPENTAG);
         }
         sLine = myTools.replaceAll(sLine,sTag,sValue);
       }
-      sLine.replaceAll(FAKEOPENTAG,OPENTAG);
+      sLine = myTools.replaceAll(sLine,FAKEOPENTAG,OPENTAG);
       vReturn.add(sLine);
     }
     return myTools.getString(vReturn);
@@ -626,6 +647,7 @@ private boolean bDirect = false;
   String sWeapon = new String();
   String sOponent = new String();
   String sUser = new String();
+  String sFun = new String();
     for (Enumeration eKills = htKills.keys();eKills.hasMoreElements();) {
       htHoldInd = new Hashtable();
       iUser = (Integer)eKills.nextElement();
@@ -672,7 +694,11 @@ private boolean bDirect = false;
             iPercent = LogTotals.workEfficiency(iKills,iDeaths,0);
 
             htTags = new Hashtable();
-            htTags.put(TAGOPONENT,sOponent);
+            sFun = sOponent;
+            if ((bColours) && (myTools.checkString((String)htFun.get(sUser)))) { 
+              sFun = myTools.stripChars((String)htFun.get(sOponent),aColours); 
+            }
+            htTags.put(TAGOPONENT,sFun);
             htTags.put(TAGKILLS,new Integer(iKills).toString());
             htTags.put(TAGDEATHS,new Integer(iDeaths).toString());
             htTags.put(TAGEFFICIENCY,new Integer(iPercent).toString());
@@ -731,6 +757,7 @@ private boolean bDirect = false;
   String sUser = new String();
   String sMiddle = sAdd + "/" + sServer;
   String sAddOn = new String("_2D");
+  String sFun = new String();
     for (Enumeration eUsers = htMainUser.keys();eUsers.hasMoreElements();) {
       sUser = (String)eUsers.nextElement();
       ltUser = (LogTotals)htMainUser.get(sUser);
@@ -744,7 +771,9 @@ private boolean bDirect = false;
       
       htTags = new Hashtable();
       htTags.put(TAGUSERLINK,sLink);
-      htTags.put(TAGUSER,sUser);
+      sFun = sUser;
+      if (bColours) { sFun = myTools.stripChars((String)htFun.get(sUser),aColours); }
+      htTags.put(TAGUSER,sFun);
       htTags.put(TAGKILLS,new Integer(iKills).toString());
       htTags.put(TAGDEATHS,new Integer(iDeaths).toString());
       htTags.put(TAGSUICIDES,new Integer(iSuicides).toString());
@@ -886,9 +915,12 @@ private boolean bDirect = false;
   private void writeIndUser(String sUser,String sAbove,String sBelow,String sDir,int iBase) throws IOException {
   BufferedWriter bwUser;
   String sFile = new String();
+  String sCUser = new String();
     if (htHoldTotals.get(sUser) != null) {
       htTags = new Hashtable();
-      htTags.put(TAGUSER,sUser);
+      if (bColours) { sCUser = myTools.stripChars((String)htFun.get(sUser),aColours); }
+      else { sCUser = sUser; }
+      htTags.put(TAGUSER,sCUser);
       htTags.put(TAGABOVE,sAbove);
       htTags.put(TAGBELOW,sBelow);
       htTags.put(TAGTOTALS,(String)htHoldTotals.get(sUser));
@@ -987,7 +1019,7 @@ private boolean bDirect = false;
   //
   //
   public void startParse(String sLog,String sInput,String sDelete) throws IOException,IllegalArgumentException {
-  String[] aLog = sLog.split(PATHSEP);
+  String[] aLog = myTools.split(sLog,PATHSEP);
   boolean bDelete = new Boolean(sDelete).booleanValue();
   File fLog;
   int iLoop = 0;
@@ -1009,7 +1041,7 @@ private boolean bDirect = false;
   //
   //
   public void startOutput(String sInput,String sOutDir,String sServer,String sType) throws IllegalArgumentException,FileNotFoundException,IOException {
-  String[] aInput = sInput.split(PATHSEP);
+  String[] aInput = myTools.split(sInput,PATHSEP);
   File fInput;
   boolean bOutput = true;
     htKills = new Hashtable();
@@ -1036,7 +1068,7 @@ private boolean bDirect = false;
   //
   //
   public void startBoth(String sLog,String sInput,String sOutDir,String sServer,String sType,String sDelete,String sForce) throws IllegalArgumentException,IOException,FileNotFoundException {
-  String[] aLog = sLog.split(PATHSEP);
+  String[] aLog = myTools.split(sLog,PATHSEP);
   boolean bDelete = new Boolean(sDelete).booleanValue();
   boolean bForce = new Boolean(sForce).booleanValue();
   boolean bGotIt = false;

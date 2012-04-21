@@ -68,10 +68,12 @@ public static final String TXTSUICIDE = new String("<world>"); // Used to tell w
 
 private Hashtable htKills = new Hashtable(); // Holds all the kills in the logfile
 private Hashtable htUsers = null; // Holds a list of users and their details
+private Hashtable htFun = new Hashtable(); // Holds a list of users fun names
 private File fIn = null; // Input file
 private File fOut = null; // Output file
 private int iNextUserID = 1; // Holds the next UserId to use
 private static final int SUICIDE = 0; // Suicides user id
+private String[] aIgnore = null; // Ignore users
 
   //  Can be called with the input and output files as paramters, or not
   //
@@ -256,6 +258,28 @@ private static final int SUICIDE = 0; // Suicides user id
     }
     return htKills;
   }
+  public Hashtable readLog(String sInFile,boolean bNew,String[] aLocIgnore) throws FileNotFoundException,IOException {
+    setIgnore(aLocIgnore);
+    return readLog(sInFile,bNew);
+  }
+
+  //  Sets the ignore list
+  //
+  //  Written by    :   Stuart Butcher
+  //
+  //  Date          :   24th September 2002
+  //
+  //
+  public void setIgnore(String[] aLocIgnore) { aIgnore = aLocIgnore; }
+  
+  //  Returns the ignore list
+  //
+  //  Written by    :   Stuart Butcher
+  //
+  //  Date          :   24th September 2002
+  //
+  //
+  public String[] getIgnore() { return aIgnore; }
 
   //  Returns the line type for the passed in line
   //
@@ -299,6 +323,7 @@ private static final int SUICIDE = 0; // Suicides user id
   private int getUserID(String sUser) {
   int iReturn = 0;
     if (!sUser.equalsIgnoreCase(TXTSUICIDE)) {
+      sUser = myTools.stripChars(sUser);
       if (htUsers == null) {
         htUsers = new Hashtable();
         htUsers.put(new Integer(iNextUserID),sUser);
@@ -306,7 +331,6 @@ private static final int SUICIDE = 0; // Suicides user id
         iNextUserID++;
         htUsers.put(new Integer(SUICIDE),TXTSUICIDE);
       } else {
-        sUser = myTools.stripChars(sUser);
         if (htUsers.containsValue(sUser)) {
           String sCurrent = new String();
           Integer iCurrent = new Integer(0);
@@ -330,6 +354,40 @@ private static final int SUICIDE = 0; // Suicides user id
     return iReturn;
   }
   
+  //  Returns the string representation of the user who killed someone in the passed in line
+  //
+  //  Written by    :   Stuart Butcher
+  //
+  //  Date          :   24th September 2002
+  //
+  //
+  private String getKillerUser(String sLine) {
+  String sReturn = new String();
+  int iStart = 0;
+  int iEnd = 0;
+    iStart = sLine.indexOf(BREAK,TXTKILL.length() + BREAK.length() + 1) + 2;
+    iEnd = sLine.indexOf(SPACE,iStart);
+    sReturn = sLine.substring(iStart,iEnd);
+    return sReturn;    
+  }
+  
+  //  Returns the string representation of the user who got killed in the passed in line
+  //
+  //  Written by    :   Stuart Butcher
+  //
+  //  Date          :   24th September 2002
+  //
+  //
+  private String getKilledUser(String sLine) {
+  String sReturn = new String();
+  int iStart = 0;
+  int iEnd = 0;
+    iStart = sLine.indexOf(TXTKILLED) + TXTKILLED.length() + 1;
+    iEnd = sLine.indexOf(SPACE,iStart);
+    sReturn = sLine.substring(iStart,iEnd);
+    return sReturn;    
+  }
+  
   //  Returns the User ID for the killer on the line passed in
   //
   //  Written by    :   Stuart Butcher
@@ -339,12 +397,7 @@ private static final int SUICIDE = 0; // Suicides user id
   //
   private int getKiller(String sLine) {
   String sUser = new String();
-  int iStart = 0;
-  int iEnd = 0;
-    iStart = sLine.indexOf(BREAK,TXTKILL.length() + BREAK.length() + 1) + 2;
-    iEnd = sLine.indexOf(SPACE,iStart);
-    sUser = sLine.substring(iStart,iEnd);
-    return getUserID(sUser);
+    return getUserID(getKillerUser(sLine));
   }
   
   //  Returns the User ID for the prey on the line passed in
@@ -355,13 +408,7 @@ private static final int SUICIDE = 0; // Suicides user id
   //
   //
   private int getKilled(String sLine) {
-  String sUser = new String();
-  int iStart = 0;
-  int iEnd = 0;
-    iStart = sLine.indexOf(TXTKILLED) + TXTKILLED.length() + 1;
-    iEnd = sLine.indexOf(SPACE,iStart);
-    sUser = sLine.substring(iStart,iEnd);
-    return getUserID(sUser);
+    return getUserID(getKilledUser(sLine));
   }
   
   //  Returns the Weapon ID for the weapon used in the frag line passed in
@@ -392,7 +439,7 @@ private static final int SUICIDE = 0; // Suicides user id
   //  Date          :   12th September 2002
   //
   //
-  private void addKill(int iKiller,int iKilled,int iWeapon) {
+  private void addKill(int iKiller,String sKiller,int iKilled,String sKilled,int iWeapon) {
   Hashtable htPeople = new Hashtable();
   Hashtable htWeapon = new Hashtable();
   Integer iHolder = new Integer(iKiller);
@@ -412,6 +459,34 @@ private static final int SUICIDE = 0; // Suicides user id
     htWeapon.put(new Integer(iWeapon),new Integer(iKills));
     htPeople.put(new Integer(iKilled),htWeapon);
     htKills.put(new Integer(iKiller),htPeople);
+    htFun.put(myTools.stripChars(sKiller),sKiller);
+    htFun.put(myTools.stripChars(sKilled),sKilled);
+  }
+  
+  //  Checks if a line from the input contains a user on the ignore list
+  //
+  //  Written by    :   Stuart Butcher
+  //
+  //  Date          :   24th September 2002
+  //
+  //
+  private boolean checkIgnore(String sLine) {
+  boolean bReturn = true;
+  String sKiller;
+  String sKilled;
+  String sIgnore;
+    if ((aIgnore != null) && (aIgnore.length > 0)) {
+      sKiller = myTools.stripChars(getKillerUser(sLine));
+      sKilled = myTools.stripChars(getKilledUser(sLine));
+      for (int iLoop = 0;iLoop < aIgnore.length;iLoop++) {
+        sIgnore = myTools.stripChars(aIgnore[iLoop]);
+        if ((sIgnore.equalsIgnoreCase(sKiller)) || (sIgnore.equalsIgnoreCase(sKilled))) {
+          bReturn = false;
+          break;
+        }
+      }
+    }
+    return bReturn;
   }
   
   //  Processes a frag line by getting the killer, killed and weapon and passing them to addKill
@@ -425,10 +500,16 @@ private static final int SUICIDE = 0; // Suicides user id
   int iKiller = 0;
   int iKilled = 0;
   int iWeapon = 0;
-    iKiller = getKiller(sLine);
-    iKilled = getKilled(sLine);
-    iWeapon = getWeapon(sLine);
-    addKill(iKiller,iKilled,iWeapon);
+  String sKiller;
+  String sKilled;
+    if (checkIgnore(sLine)) {
+      iKiller = getKiller(sLine);
+      iKilled = getKilled(sLine);
+      iWeapon = getWeapon(sLine);
+      sKiller = getKillerUser(sLine);
+      sKilled = getKilledUser(sLine);
+      addKill(iKiller,sKiller,iKilled,sKilled,iWeapon);
+    }
   }
   
   //  Returns the users hashtable
@@ -439,6 +520,15 @@ private static final int SUICIDE = 0; // Suicides user id
   //
   //
   public Hashtable getUsers() { return htUsers; }
+
+  //  Returns the users funname hashtable
+  //
+  //  Written by    :   Stuart Butcher
+  //
+  //  Date          :   24th September 2002
+  //
+  //
+  public Hashtable getFun() { return htFun; }
 
   //  Returns the kills hashtable
   //
