@@ -1,0 +1,20 @@
+<HTML>
+<HEAD>
+</HEAD>
+<BODY BGCOLOR="BLACK" TEXT="LIGHTBLUE">
+<CENTER>
+<H2><Q3LOG TYPE="Value" NAME="User"></H2>
+<TABLE WIDTH=98% BORDERCOLORDARK=GRAY BORDERCOLORLIGHT=WHITE BORDER=10>
+  <TR>
+    <TH>Oponent</TH>
+    <TH>Kills</TH>
+    <TH>Deaths</TH>
+    <TH>Efficiency</TH>
+    <TH>Weapons</TH>
+  </TR>
+<Q3LOG TYPE="Section" NAME="Oponents">
+<Q3LOG TYPE="Section" NAME="Totals">
+</TABLE>
+</CENTER>
+</BODY>
+</HTML>

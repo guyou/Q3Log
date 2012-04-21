@@ -1,0 +1,11 @@
+  <TR>
+    <TH>Totals</TH>
+    <TD ALIGN=RIGHT><Q3LOG TYPE="Value" NAME="Kills"></TD>
+    <TD ALIGN=RIGHT><Q3LOG TYPE="Value" NAME="Deaths"></TD>
+    <TD ALIGN=RIGHT><Q3LOG TYPE="Value" NAME="Efficiency">%</TD>
+    <TD>
+      <TABLE WIDTH=100%>
+<Q3LOG TYPE="Section" NAME="Weapons">
+      </TABLE>
+    </TD>
+  </TR>

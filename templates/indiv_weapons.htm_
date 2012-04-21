@@ -1,0 +1,4 @@
+        <TR>
+          <TD><Q3LOG TYPE="Value" NAME="Weapon">:</TD>
+          <TD ALIGN=RIGHT><Q3LOG TYPE="Value" NAME="Kills"></TD>
+        </TR>
