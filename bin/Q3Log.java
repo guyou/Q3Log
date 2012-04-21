@@ -190,6 +190,7 @@ public static final String STATICROW = new String("table_row.htm_"); // File nam
 public static final String STATICTOTAL = new String("table_total.htm_"); // File name for Table Total Row page
 public static final String PROPSTATIC = new String("Static"); // Static property name (for conf file)
 public static final String PROPTARGET = new String("Target"); // Target property name (for conf file)
+public static final String PROPCUTOFF = new String("Cutoff"); // Cutoff property name (for conf file)
 public static final String TAGVALUE = "VALUE"; // Type of Tag that is replace by a value
 public static final String TAGSECTION = "SECTION"; // Type of Tag that is replaced by another file
 public static final String TAGSYSTEM = "SYSTEM"; // Type of Tag that is replaced by a system value
@@ -876,7 +877,7 @@ private Properties prProp = new Properties(); // Properties read from the config
   BufferedWriter bwUser;
 
   int iWeapon = 0;int iKills = 0;int iKill = 0;int iDeath = 0;int iTotalKills = 0;int iPercent = 0;int iStart = 0;
-  int iRank = 0;int iAbsTotFrags = 0;int iAbsTotKills = 0;int iAbsTotDeaths = 0;int iAbsTotSuicides = 0;
+  int iRank = 0;int iAbsTotFrags = 0;int iAbsTotKills = 0;int iAbsTotDeaths = 0;int iAbsTotSuicides = 0;int iCutOff = 0;
   int iAbsTotRank = 0;int iAbsTotEfficiency = 0;int iAbsTotUsers = 0;int iTotKills = 0;int iTotDeaths = 0;
   int[] iWeaponTotals;
   float fKills;float fDeaths;float fSuicides;float fAbsTotKillRatio = 0;float fAbsTotUsers = 0;
@@ -884,6 +885,7 @@ private Properties prProp = new Properties(); // Properties read from the config
     if ((prProp.get(PROPSTATIC) != null) && (!prProp.get(PROPSTATIC).equals(""))) { sStatic = (String)prProp.get(PROPSTATIC); }
     else { throw new IllegalArgumentException("Static needs to be set in the config file"); }
     if ((prProp.get(PROPTARGET) != null) && (!prProp.get(PROPTARGET).equals(""))) { sTarget = (String)prProp.get(PROPTARGET); }
+    if ((prProp.get(PROPCUTOFF) != null) && (!prProp.get(PROPCUTOFF).equals(""))) { iCutOff = new Integer((String)prProp.get(PROPCUTOFF)).intValue(); }
 
     readStatic(sStatic);
  
@@ -1041,7 +1043,7 @@ private Properties prProp = new Properties(); // Properties read from the config
       
       htHold.put(sUser,getString(swapTags(vTableRows,htTags)));
       iAbsTotFrags += iDeaths[0].intValue();
-      if (iDeaths[0].intValue() + iDeaths[1].intValue() + iDeaths[2].intValue() > 9) {
+      if (iDeaths[0].intValue() + iDeaths[1].intValue() + iDeaths[2].intValue() >= iCutOff) {
         iAbsTotKills += iDeaths[0].intValue();
         iAbsTotDeaths += iDeaths[1].intValue();
         iAbsTotSuicides += iDeaths[2].intValue();
@@ -1261,7 +1263,8 @@ private Properties prProp = new Properties(); // Properties read from the config
   int iLen = args.length;
   String sAction = new String();
   Q3Log myLog = new Q3Log();
-    sHelp = "Q3Log v1.2 - Quake 3 Arena Stats Generator" + LINESEP + LINESEP +
+  IllegalArgumentException eIAETest = new IllegalArgumentException();
+    sHelp = "Q3Log v1.3 - Quake 3 Arena Stats Generator" + LINESEP + LINESEP +
             "The following options are valid:" + LINESEP +
             "   help" + LINESEP +
             "   parse Config LogName[@LogName@...] InputName Delete" + LINESEP +
@@ -1360,8 +1363,12 @@ private Properties prProp = new Properties(); // Properties read from the config
           bFailed = true;
         }
       } catch (Exception e) {
-        System.out.println("Exception - " + e.toString());
-        e.printStackTrace();
+        if (e.getClass() == eIAETest.getClass()) {
+         System.out.println(e.getMessage()); 
+        } else {
+          System.out.println("Exception - " + e.toString());
+          e.printStackTrace();
+        }
       }
     } else {
       bFailed = true;
