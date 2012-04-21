@@ -24,6 +24,8 @@ public class LogTools {
 // The following Strings are globally used variables defined once here
 public static final String LINESEP = System.getProperty("line.separator"); // The line seperator for this system
 public static final String DIRSEP = System.getProperty("file.separator"); // The directory seperator for this system
+public static final String WEAPONLINK = new String("LINKWEAP"); // The text used to specifiy that a weapon in the weapons list should be linked with another one
+
   
   //  Returns true if the passed file is valid, false if it isnt
   //
@@ -82,9 +84,13 @@ public static final String DIRSEP = System.getProperty("file.separator"); // The
   //
   public String stripChars(String sUser,String[] aColours) {
   String sRep;
-  String sAfter = new String();
+  String sAfter = new String("</FONT>");
   String sBefore = new String("<FONT COLOR=\"");
   String sMiddle = new String("\">");
+  int iStart = 0;int iEnd = 0;
+  String sColour = new String();
+  String sStart = new String();
+  String sEnd = new String();
     sUser = replaceAll(sUser,"<","(");
     sUser = replaceAll(sUser,">",")");
     sUser = replaceAll(sUser,"*","_");
@@ -94,12 +100,39 @@ public static final String DIRSEP = System.getProperty("file.separator"); // The
     sUser = replaceAll(sUser,"\\","_");
     sUser = replaceAll(sUser,"/","_");
     sUser = replaceAll(sUser,"\"","_");
-    for (int iLoop = 0;iLoop < 10;iLoop++) {
-      if ((aColours != null) && (aColours.length > iLoop)) { sRep = sBefore + aColours[iLoop] + sMiddle;sAfter = "</FONT>"; }
+    sUser = replaceAll(sUser,"^B","");
+    sUser = replaceAll(sUser,"^b","");
+    sUser = replaceAll(sUser,"^F","");
+    sUser = replaceAll(sUser,"^f","");
+    sUser = replaceAll(sUser,"^N","");
+    sUser = replaceAll(sUser,"^n","");
+    for (int iLoop = 0;iLoop < 8;iLoop++) {
+      if ((aColours != null) && (aColours.length > iLoop)) { sRep = sBefore + aColours[iLoop] + sMiddle; }
       else { sRep = new String(); }
       sUser = replaceAll(sUser,"^" + iLoop,sRep);
     }
-    return sUser + sAfter;
+    if (aColours.length > 0) { 
+      iStart = sUser.indexOf("^X");
+      while (iStart > -1) {
+        iEnd = iStart + 8;
+        sStart = sUser.substring(0,iStart);
+        sEnd = sUser.substring(iEnd);
+        sColour = sUser.substring(iStart + 2,iEnd - 1);
+        sUser = sStart + sBefore + "#" + sColour + sMiddle + sEnd;
+        iStart = sUser.indexOf("^X");
+      }
+    } else {
+      iStart = sUser.indexOf("^X");
+      while (iStart > -1) {
+        iEnd = iStart + 8;
+        sStart = sUser.substring(0,iStart);
+        sEnd = sUser.substring(iEnd);
+        sUser = sStart + sEnd;
+        iStart = sUser.indexOf("^X");
+      }
+    }
+    if (sUser.indexOf("FONT") > -1) { sUser += sAfter; }
+    return sUser;
   }
   public String stripChars(String sUser) { return stripChars(sUser,new String[0]); }
   
@@ -204,35 +237,24 @@ public static final String DIRSEP = System.getProperty("file.separator"); // The
   //
   //
   public static String replaceAll(String sMain,String sReplace,String sWith) {
-  int iLen = sReplace.length(); // The length of the string to replace
-  int iStart; // Start position of the string to replace
-  int iEnd; // End possition of the string to replace
-  String sReturn = new String(sMain); // The return string
-    // Check if we have a string to replace
+  int iLen = sReplace.length();
+  int iStart;
+  int iEnd;
+  String sReturn = new String(sMain);
     if ((sMain.length() > sReplace.length()) && (sMain.indexOf(sReplace) > -1)) {
-      // Clear the return string
       sReturn = new String();
-      // Get the first occurance of the replace string
       iStart = sMain.indexOf(sReplace);
-      // Loop through all the occurances
       while (iStart > -1) {
-        // Get the end position
         iEnd = iStart + iLen - 1;
-        // If we arent at the start then add the strings together, otherwise miss off the main bit
         if (iStart == 0) { sReturn = sReturn + sWith; } 
         else { sReturn = sReturn + sMain.substring(0,iStart) + sWith; }
-        // Cut off what we just added
         sMain = sMain.substring(iEnd + 1);
-        // Get the next occurance
         iStart = sMain.indexOf(sReplace);
       }
-      // Add the last bit on to the return string
       sReturn = sReturn + sMain;
     } else if (sMain.equals(sReplace)) {
-      // The main string only contains the replace string so just return the replace with string
       sReturn = sWith;
     }
-    // Return
     return sReturn;
   }
 
@@ -295,36 +317,26 @@ public static final String DIRSEP = System.getProperty("file.separator"); // The
   //
   // Date             :   4th August 2002
   //
-  // Written for      :   GSK
-  //
   public static String[] split(String sCheck,String sChar) {
   String[] aReturn;
   ArrayList lReturn = new ArrayList();
   int iPos,iPos2;
-    // Make sure we have a list
     iPos = sCheck.indexOf(sChar);
     if (iPos > -1) {  
-      // We have a list so start adding terms to it
       lReturn.add(sCheck.substring(0,iPos));
       while (iPos > -1) { // Loop through all occurances
-        // Get the end of the term
         iPos2 = sCheck.indexOf(sChar,iPos + 1);
-        // If we are at the end, then set ourselves to the last position
         if (iPos2 == -1) { iPos2 = sCheck.length(); }
-        // Add the term
         lReturn.add(sCheck.substring(iPos + 1,iPos2));
-        // Get the next occurance
         iPos = sCheck.indexOf(sChar,iPos + 1);
       }
     } else { 
-      // We dont have a list so return just sCheck
       lReturn.add(sCheck); 
     } 
     aReturn = new String[lReturn.size()];
     for (int iLoop = 0;iLoop < lReturn.size();iLoop++) {
       aReturn[iLoop] = (String)lReturn.get(iLoop);
     }
-    // Return
     return aReturn;
   }
 

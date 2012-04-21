@@ -7,7 +7,7 @@ public class LogTotals {
 /*
 
   This class is built to hold user totals for ease of use.  It can work out the average efficiency, rank and 
-  kill ratio.
+  kill ratio, as well as holding weapon info.
   
   You are free to distribute this file as long as you don't charge anything for it.  If you want to put it on
   a magazine CD/DVD then e-mail me at givememoney@wilf.co.uk and we can talk.
@@ -28,6 +28,8 @@ public static final int EFFICIENCY = 2;
 public static final int SUICIDES = 3;
 public static final int RANK = 4;
 public static final int RATIO = 5;
+public static final String WEAPONS = new String("Weapons");
+public static final String FRAGS = new String("Frags");
 
 private LogTools myTools = new LogTools(); // Create a LogTools object to use
 
@@ -41,6 +43,9 @@ private float fOtherUsers = 0;
 private float fEfficiency = 0;
 private float fKillRatio = 0;
 private float fRank = 0;
+private int[] iWeaponTotals;
+private String[] sWeaponsList;
+private ArrayList alUsers = new ArrayList();
   
   //  Can be called with the initial number of users (used for individual user totals)
   //
@@ -49,7 +54,18 @@ private float fRank = 0;
   //  Date          :   22nd September 2002
   //
   //
-  public LogTotals(int iUsers) { fUsers = new Float(iUsers).floatValue(); }
+  public LogTotals(int iUsers) { 
+    fUsers = new Float(iUsers).floatValue(); 
+  }
+  public LogTotals(String[] sLocWeaponsList) { 
+    sWeaponsList = sLocWeaponsList;
+    iWeaponTotals = new int[sWeaponsList.length];
+  }
+  public LogTotals(int iUsers,String[] sLocWeaponsList) { 
+    fUsers = new Float(iUsers).floatValue(); 
+    sWeaponsList = sLocWeaponsList; 
+    iWeaponTotals = new int[sWeaponsList.length];
+  }
   public LogTotals() { }
   
   //  Adds a number of frags into the user totals
@@ -60,6 +76,7 @@ private float fRank = 0;
   //
   //
   public void addFrag(int iNum) { fFrags += iNum; }
+  public void addFrag(int iNum,int iWeapon) { fFrags += iNum; iWeaponTotals[iWeapon] += iNum; }
   
   //  Adds a number of kills into the user totals
   //
@@ -95,11 +112,57 @@ private float fRank = 0;
   //  Date          :   22nd September 2002
   //
   //
-  public void addUser(boolean bLive) { 
-    if (bLive) { fUsers++; }
-    else { fOtherUsers++; }
+  public void addUser(String sUser,boolean bLive) { 
+    if (!alUsers.contains(sUser)) {
+      alUsers.add(sUser);
+      if (bLive) { fUsers++; }
+      else { fOtherUsers++; }
+    }
   }
  
+  //  Return the weapons that have been passed in so far in order of usage
+  //
+  //  Written by    :   Stuart Butcher
+  //
+  //  Date          :   27th September 2002
+  //
+  //
+  public Hashtable getWeapons() {
+  Hashtable htReturn = new Hashtable();
+  String[] aWeapons = new String[sWeaponsList.length];
+  int[] aFrags = new int[sWeaponsList.length];
+  String[] wHold;
+  int[] fHold;
+  float fHighest = -1;
+  float fCurrent;
+  int iPos = 0;
+  boolean bDone = false;
+  int iNext = 0;
+    while(!bDone) {
+      for (int iLoop = 0;iLoop < sWeaponsList.length;iLoop++) {
+        fCurrent = iWeaponTotals[iLoop];
+        if (fCurrent > fHighest) { iPos = iLoop; fHighest = fCurrent; }
+      }
+      if (fHighest == 0) { bDone = true; }
+      else {
+        aWeapons[iNext] = sWeaponsList[iPos];
+        aFrags[iNext] = iWeaponTotals[iPos];
+        iWeaponTotals[iPos] = 0;
+        fHighest = 0;
+        iNext++;
+      }
+    }
+    fHold = new int[iNext];
+    wHold = new String[iNext];
+    for (int iLoop = 0;iLoop < iNext;iLoop++) {
+      wHold[iLoop] = aWeapons[iLoop];
+      fHold[iLoop] = aFrags[iLoop];
+    }
+    htReturn.put(WEAPONS,wHold);
+    htReturn.put(FRAGS,fHold);
+    return htReturn;
+  }
+  
   //  Returns the number of frags from the user totals
   //
   //  Written by    :   Stuart Butcher
@@ -116,7 +179,11 @@ private float fRank = 0;
   //  Date          :   22nd September 2002
   //
   //
-  public int getKills() { return new Float(fKills / fUsers).intValue(); }
+  public int getKills(boolean bDivide) { 
+    if (bDivide) { return new Float(fKills / fUsers).intValue(); }
+    else { return new Float(fKills).intValue(); }
+  }
+  public int getKills() { return getKills(true); }
   
   //  Returns the total number of kills from the user totals
   //
@@ -126,6 +193,25 @@ private float fRank = 0;
   //
   //
   public int getActualKills() { return new Float(fKills).intValue(); }
+
+  //  Returns the total number of deaths from the user totals
+  //
+  //  Written by    :   Stuart Butcher
+  //
+  //  Date          :   27th September 2002
+  //
+  //
+  public int getActualDeaths() { return new Float(fDeaths).intValue(); }
+
+  //  Returns the total number of suicides from the user totals
+  //
+  //  Written by    :   Stuart Butcher
+  //
+  //  Date          :   27th September 2002
+  //
+  //
+  public int getActualSuicides() { return new Float(fSuicides).intValue(); }
+
   
   //  Returns the average number of suicides from the user totals
   //
@@ -228,7 +314,22 @@ private float fRank = 0;
   //  Date          :   22nd September 2002
   //
   //
-  private static Float efficiency(float fKills,float fDeaths,float fSuicides) { return new Float((100 / (fKills + fDeaths)) * (fKills - (fSuicides * 2))); }
+  private static Float efficiency(float fKills,float fDeaths,float fSuicides) { 
+  Float fReturn = new Float(0);
+    if ((fKills == 0) || (fDeaths == 0)) {
+      if ((fKills == 0) && (fDeaths == 0)) { 
+        if (fSuicides == 0) { fReturn = new Float(0); }
+        else { fReturn = new Float(-999); }
+      } else if (fKills == 0) { 
+        if (fSuicides == 0) { fReturn = new Float(-999); }
+        else { fReturn = new Float((100 / fDeaths) * (1 - (fSuicides * 2))); }
+      } else { 
+        if (fSuicides == 0) { fReturn = new Float(100); } 
+        else { fReturn = new Float((100 / fKills) * (fKills - (fSuicides * 2))); }
+      }
+    } else { fReturn = new Float((100 / (fKills + fDeaths)) * (fKills - (fSuicides * 2))); }
+    return fReturn;
+  }
 
   //  Returns the average kill ratio from the passed in totals
   //
@@ -237,7 +338,16 @@ private float fRank = 0;
   //  Date          :   22nd September 2002
   //
   //
-  private static Float killratio(float fKills,float fDeaths,float fSuicides) { return new Float(fKills / fDeaths); }
+  private static Float killratio(float fKills,float fDeaths,float fSuicides) { 
+  Float fReturn = new Float(0);
+    if ((fKills == 0) || (fDeaths == 0)) {
+      if ((fKills == 0) && (fDeaths == 0)) { fReturn = new Float(0); }
+      else if (fKills == 0) { fReturn = new Float(-999); }
+      else { fReturn = new Float(999); }
+    } else { fReturn = new Float(fKills / fDeaths); }
+
+    return fReturn;
+  }
 
   //  Returns the average rank from the passed in totals
   //

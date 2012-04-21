@@ -22,7 +22,7 @@ public class LogParser {
 */
 
 private LogTools myTools = new LogTools(); // Create a LogTools object to use
-
+public static final String WEAPONLINK = new String(LogTools.WEAPONLINK); // Linked weapon text
 // The following contains all the different lines that are defined as System (feel free to add to it for other mods)
 public static final int INDENT = 7; // Indent in Logfile (usually 7)
 public static final String[] TXTSYSTEM = {
@@ -66,14 +66,21 @@ public static final int KILL = 3; // A frag
 public static final int GAME = 4; // New game (ignored)
 public static final String TXTSUICIDE = new String("<world>"); // Used to tell when a kill is actually a suicide (also if Killer = Killed)
 
+public static final String TXTTOTALS = new String("TOTALS");
+public static final String TXTOPONENTS = new String("OPONENTS");
+
 private Hashtable htKills = new Hashtable(); // Holds all the kills in the logfile
 private Hashtable htUsers = null; // Holds a list of users and their details
 private Hashtable htFun = new Hashtable(); // Holds a list of users fun names
+
+private LogTotals grandTotal; // The grand total of kills
+
 private File fIn = null; // Input file
 private File fOut = null; // Output file
 private int iNextUserID = 1; // Holds the next UserId to use
 private static final int SUICIDE = 0; // Suicides user id
 private String[] aIgnore = null; // Ignore users
+private String[] sWeaponsList;
 
   //  Can be called with the input and output files as paramters, or not
   //
@@ -82,8 +89,10 @@ private String[] aIgnore = null; // Ignore users
   //  Date          :   22nd September 2002
   //
   //
-  public LogParser() {
-    
+  public LogParser() { }
+  public LogParser(String sLocWeaponsList[]) {
+    sWeaponsList = sLocWeaponsList;
+    grandTotal = new LogTotals(sWeaponsList);
   }
   public LogParser(String sLocInFile) throws IllegalArgumentException,FileNotFoundException {
     if (myTools.checkFile(sLocInFile)) { fIn = new File(sLocInFile); }
@@ -388,6 +397,15 @@ private String[] aIgnore = null; // Ignore users
     return sReturn;    
   }
   
+  //  Return the grand total of kills
+  //
+  //  Written by    :   Stuart Butcher
+  //
+  //  Date          :   27th September 2002
+  //
+  //
+  public LogTotals getGrandTotal() { return grandTotal; }
+  
   //  Returns the User ID for the killer on the line passed in
   //
   //  Written by    :   Stuart Butcher
@@ -407,9 +425,7 @@ private String[] aIgnore = null; // Ignore users
   //  Date          :   12th September 2002
   //
   //
-  private int getKilled(String sLine) {
-    return getUserID(getKilledUser(sLine));
-  }
+  private int getKilled(String sLine) { return getUserID(getKilledUser(sLine)); }
   
   //  Returns the Weapon ID for the weapon used in the frag line passed in
   //
@@ -441,26 +457,92 @@ private String[] aIgnore = null; // Ignore users
   //
   private void addKill(int iKiller,String sKiller,int iKilled,String sKilled,int iWeapon) {
   Hashtable htPeople = new Hashtable();
-  Hashtable htWeapon = new Hashtable();
-  Integer iHolder = new Integer(iKiller);
-  int iKills = 1;
-  int iHold = 0;
-    if (htKills.get(iHolder) != null) {
-      htPeople = (Hashtable)htKills.get(iHolder);
-      iHolder = new Integer(iKilled);
-      if (htPeople.get(iHolder) != null) {
-        htWeapon = (Hashtable)htPeople.get(iHolder);
-        iHolder = new Integer(iWeapon);
-        if (htWeapon.get(iHolder) != null) {
-          iKills = ((Integer)htWeapon.get(iHolder)).intValue() + 1;
+  Hashtable htHold = new Hashtable();
+  Integer IKiller = new Integer(iKiller);
+  Integer IKilled = new Integer(iKilled);
+  LogTotals myTotal = new LogTotals(sWeaponsList);
+  LogTotals myOponent = new LogTotals(1,sWeaponsList);
+  String sWeapon;
+  
+    sWeapon = sWeaponsList[iWeapon];
+    if ((sWeapon.length() > WEAPONLINK.length()) && (sWeapon.substring(0,WEAPONLINK.length()).equals(WEAPONLINK))) { 
+      iWeapon = new Integer(sWeapon.substring(WEAPONLINK.length())).intValue(); 
+    }
+
+    grandTotal.addFrag(1,iWeapon);
+
+    if ((!sKiller.equals(sKilled)) && (!sKiller.equals(TXTSUICIDE))) {
+      
+      // Normal killing
+      if (htKills.get(IKiller) != null) {
+        htHold = (Hashtable)htKills.get(IKiller);
+        if (htHold.get(TXTTOTALS) != null) { myTotal = (LogTotals)htHold.get(TXTTOTALS); }
+        if (htHold.get(TXTOPONENTS) != null) { 
+          htPeople = (Hashtable)htHold.get(TXTOPONENTS);
+          if (htPeople.get(IKilled) != null) { myOponent = (LogTotals)htPeople.get(IKilled); }
         }
       }
+      
+      myOponent.addKill(1);
+      myOponent.addUser(sKilled,true);
+      myOponent.addFrag(1,iWeapon);
+      htPeople.put(IKilled,myOponent);
+
+      myTotal.addFrag(1,iWeapon);
+      myTotal.addKill(1);
+      myTotal.addUser(sKilled,true);
+      htHold.put(TXTTOTALS,myTotal);
+      htHold.put(TXTOPONENTS,htPeople);
+      htKills.put(IKiller,htHold);
+      
+      htHold = new Hashtable();
+      myTotal = new LogTotals(sWeaponsList);
+      myOponent = new LogTotals(1,sWeaponsList);
+      htPeople = new Hashtable();
+      
+      if (htKills.get(IKilled) != null) { 
+        htHold = (Hashtable)htKills.get(IKilled);
+        if (htHold.get(TXTTOTALS) != null) { myTotal = (LogTotals)htHold.get(TXTTOTALS); }
+        if (htHold.get(TXTOPONENTS) != null) { 
+          htPeople = (Hashtable)htHold.get(TXTOPONENTS); 
+          if (htPeople.get(IKiller) != null) { myOponent = (LogTotals)htPeople.get(IKiller); }
+        }
+      }
+
+      myOponent.addDeath(1);
+      myOponent.addUser(sKiller,true);
+      htPeople.put(IKiller,myOponent);
+
+      myTotal.addDeath(1);
+      myTotal.addUser(sKiller,true);
+      htHold.put(TXTTOTALS,myTotal);
+      htHold.put(TXTOPONENTS,htPeople);
+      htKills.put(IKilled,htHold);
+    
+    } else {
+
+      // Suicide
+      htHold = new Hashtable();
+      myTotal = new LogTotals(sWeaponsList);
+      myOponent = new LogTotals(1,sWeaponsList);
+      htPeople = new Hashtable();
+
+      if (htKills.get(IKilled) != null) { 
+        htHold = (Hashtable)htKills.get(IKilled);
+        if (htHold.get(TXTTOTALS) != null) { myTotal = (LogTotals)htHold.get(TXTTOTALS); }
+        if (htHold.get(TXTOPONENTS) != null) { htPeople = (Hashtable)htHold.get(TXTOPONENTS); }
+      }
+
+      myTotal.addSuicide(1);
+      htHold.put(TXTTOTALS,myTotal);
+      htHold.put(TXTOPONENTS,htPeople);
+      htKills.put(IKilled,htHold);
+    
     }
-    htWeapon.put(new Integer(iWeapon),new Integer(iKills));
-    htPeople.put(new Integer(iKilled),htWeapon);
-    htKills.put(new Integer(iKiller),htPeople);
+    
     htFun.put(myTools.stripChars(sKiller),sKiller);
     htFun.put(myTools.stripChars(sKilled),sKilled);
+    
   }
   
   //  Checks if a line from the input contains a user on the ignore list

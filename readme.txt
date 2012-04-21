@@ -1,4 +1,4 @@
-Q3Log v2.1 ReadMe
+Q3Log v2.2 ReadMe
 =================
 
 (Copyright Stuart Butcher <stu@wilf.co.uk> 2002)
@@ -29,9 +29,15 @@ It is written entirely in Java, and should work with Java 2 (1.2.2) and higher. 
 2.  New Features
 ================
 
-  - New 'Ignore' setting added to conf file to allow certain users to be ignored in the output
-  - New 'Colours' setting added to conf file to allow output of 'fun' user name colours
-  - Changed some code so that Q3Log 2.1 will now work with Java 2 1.2.2 or later
+  - TopWeapons feature (conf file) that outputs the top X most used weapons for the server
+  - LinkWeapons feature (conf file) that allows users to specify that weapons should be linked 
+    into one output weapon, i.e. the Rocket Launcher (Explosion) weapon is linked to the Rocket Launcher 
+    weapon to produce one output of totals etc
+  - New 'percent' tag for weapons tables to show the percentage of kills using the weapon
+  - Added colour mapping (conf file) to allow the specification of what colours to actually output
+  - More of the special name codes are now stripped, like ^b
+  - Major code changes to reduce the number of loops involved in outputing the data
+  - New system tags added for outputing the Cutoff point and the number of top weapons shown
 
 3.  Installation
 ================
@@ -61,6 +67,7 @@ Once run, you should have all the HTML files you need containing the stats.
 If you want to customise the output you will need to edit the following files (in the templates folder):
 
   table_main.htm_           - the main page containing summary stats info
+  table_weapons.htm_        - the top X weapons table page
   table_row_above.htm_      - each row of the summary stats table for people above the average
   table_row_below.htm_      - each row of the summary stats table for people below the average
   table_row_total.htm_      - the totals row of the summary stats table
@@ -102,6 +109,14 @@ Tags have different values in different pages.  The following lists all possible
                                   each user below average
                     Totals      = The averages for the main table 
                                   (table_row_total.htm_)
+
+  table_weapons.htm_ -
+                    Value Tags
+                    ----------
+                    Member      = The number in the table of this weapon
+                    Weapon      = The weapon name
+                    Kills       = Number of kills on the server that used this weapon
+                    Percent     = Percentage of overall kills using this weapon
 
   table_row_above.htm_ & table_row_below.htm_ -
   
@@ -189,6 +204,8 @@ Tags have different values in different pages.  The following lists all possible
                     Weapon      = The name of this weapon
                     Kills       = Total number of kills with this weapon against 
                                   this oponent
+                    Percent     = The percentage of kills against this oponent using 
+                                  this weapon
   
   indiv_weapons_total.htm_ -
   
@@ -197,6 +214,8 @@ Tags have different values in different pages.  The following lists all possible
                     Weapon      = The name of this weapon
                     Kills       = Total number of kills with this weapon for this 
                                   user
+                    Percent     = The percentage of kills for this user using 
+                                  this weapon
   
   All Pages -
                     System Tages
@@ -212,6 +231,8 @@ Tags have different values in different pages.  The following lists all possible
                     ProgFull    = the 3 above parameters put into a meaningfull string
                     ProgURL     = the homepage of the program used to generate the log 
                                   files
+                    CutOff      = the number of frags needed to feature on the table
+                    TopWeapons  = the number of top weapons displayed
 
 5.  Future Enhancements
 =======================

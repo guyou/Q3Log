@@ -26,8 +26,13 @@ public class Q3Log {
     
 */
 
+// The next few lines are creating the tool objects needed by Q3Log
+private LogTools myTools = new LogTools();
+private LogParser myParser;
+private LogTotals myTotals;
+
 // The program version
-public static final String PROGVER = new String("2.1"); 
+public static final String PROGVER = new String("2.2"); 
 // The programs name
 public static final String PROGNAME = new String("Q3Log"); 
 // The programs description
@@ -36,6 +41,7 @@ public static final String PROGDESC = new String("Quake 3 Arena Stats Generator"
 public static final String PROGFULL = new String(PROGNAME + " v" + PROGVER + " - " + PROGDESC); 
 // Program homepage
 public static final String PROGURL = new String("http://www.wilf.co.uk/"); 
+public static final String WEAPONLINK = new String(LogTools.WEAPONLINK);
 // The following arrays are defined for mod types, and contain the weapons used in that mod
 public static final String[] TXTQ3WEAPONS = {
   "Unknown - 0",
@@ -55,7 +61,73 @@ public static final String[] TXTQ3WEAPONS = {
   "Unknown - 14",
   "Unknown - 15",
   "Lava",
-  "Unknown - 17",
+  "Crushing",
+  "Telefrag",
+  "Falling",
+  "Unknown - 20",
+  "Unknown - 21",
+  "Trigger Death",
+  "Unknown - 23",
+  "Unknown - 24",
+  "Unknown - 25",
+  "Unknown - 26",
+  "Unknown - 27",
+  "Unknown - 28",
+  "Unknown - 29",
+  "Unknown - 30",
+};
+public static final String[] TXTQ3WEAPONSLINK = {
+  "Unknown - 0",
+  "Shotgun",
+  "Gauntlet",
+  "Machine Gun",
+  "Grenade Launcher",
+  WEAPONLINK + "4",
+  "Rocket Launcher",
+  WEAPONLINK + "6",
+  "Plasma Gun",
+  WEAPONLINK + "8",
+  "Railgun",
+  "Lightning Gun",
+  "BFG",
+  WEAPONLINK + "12",
+  "Unknown - 14",
+  "Unknown - 15",
+  "Suicide",
+  WEAPONLINK + "16",
+  "Telefrag",
+  WEAPONLINK + "16",
+  "Unknown - 20",
+  "Unknown - 21",
+  WEAPONLINK + "16",
+  "Unknown - 23",
+  "Unknown - 24",
+  "Unknown - 25",
+  "Unknown - 26",
+  "Unknown - 27",
+  "Unknown - 28",
+  "Unknown - 29",
+  "Unknown - 30",
+};
+public static final String[] TXTHH3WEAPONS = {
+  "Unknown - 0",
+  "Shotgun",
+  "Gauntlet",
+  "Machine Gun",
+  "Grenade Launcher",
+  "Grenade Launcher (Explosion)",
+  "Rocket Launcher",
+  "Rocket Launcher (Explosion)",
+  "Razor Gun",
+  "Razor Gun (Head shot)",
+  "Railgun",
+  "Lightning Gun",
+  "BFG",
+  "BFG (Heat)",
+  "Unknown - 14",
+  "Unknown - 15",
+  "Lava",
+  "Crushing",
   "Telefrag",
   "Falling",
   "Unknown - 20",
@@ -70,30 +142,30 @@ public static final String[] TXTQ3WEAPONS = {
   "Unknown - 29",
   "Unknown - 30",
 }; 
-public static final String[] TXTHH3WEAPONS = {
+public static final String[] TXTHH3WEAPONSLINK = {
   "Unknown - 0",
   "Shotgun",
   "Gauntlet",
   "Machine Gun",
   "Grenade Launcher",
-  "Grenade Launcher (Explosion)",
+  WEAPONLINK + "4",
   "Rocket Launcher",
-  "Rocket Launcher (Explosion)",
+  WEAPONLINK + "6",
   "Razor Gun",
-  "Razor Gun (Head shot)",
+  WEAPONLINK + "8",
   "Railgun",
   "Lightning Gun",
-  "Unknown - 12",
-  "Unknown - 13",
+  "BFG",
+  WEAPONLINK + "12",
   "Unknown - 14",
   "Unknown - 15",
-  "Lava",
-  "Unknown - 17",
+  "Suicide",
+  WEAPONLINK + "16",
   "Telefrag",
-  "Falling",
+  WEAPONLINK + "16",
   "Unknown - 20",
   "Unknown - 21",
-  "Trigger Death",
+  WEAPONLINK + "16",
   "Unknown - 23",
   "Unknown - 24",
   "Unknown - 25",
@@ -136,69 +208,68 @@ public static final String[] TXTUT3WEAPONS = {
   "Unknown - 29",
   "Unknown - 30",
 };
-// The next few lines are creating the tool objects needed by Q3Log
-private LogTools myTools = new LogTools();
-private LogParser myParser = new LogParser();
-private LogTotals myTotals = new LogTotals();
-private LogTotals myIndTotals = new LogTotals();
-
+public static final String[] TXTUT3WEAPONSLINK = {
+  "Unknown - 0",
+  "Drowned",
+  "Unknown - 2",
+  "Unknown - 3",
+  "Unknown - 4",
+  "Unknown - 5",
+  "Suicide",
+  "Unknown - 7",
+  "Unknown - 8",
+  WEAPONLINK + "6",
+  "Change Team",
+  "Unknown - 11",
+  "Knife",
+  WEAPONLINK,
+  "Beretta",
+  "Dessert Eagle",
+  "SPAS",
+  "UMP45",
+  "MP5K",
+  "M4",
+  "G36",
+  "PSG1",
+  "HK69",
+  "Bleeding",
+  "Unknown - 24",
+  WEAPONLINK,
+  "Unknown - 26",
+  "Unknown - 27",
+  "SR8",
+  "Unknown - 29",
+  "Unknown - 30",
+};
 public static final int INDENT = 7; // Indent in Logfile (usually 7)
+
+// Command line argument strings
 public static final String ARGHELP = new String("HELP"); // Help argument
 public static final String ARGPARSE = new String("PARSE"); // Parse argument
 public static final String ARGOUTPUT = new String("OUTPUT"); // Output argument
 public static final String ARGBOTH = new String("BOTH"); // Both argument
+
+// The game types allowed
 public static final String TYPESTANDARD = new String("STANDARD"); // Standard Type
 public static final String TYPEARENA = new String("ARENA"); // Arena Type
 public static final String TYPEHH3 = new String("HH3"); // Headhunters Type
 public static final String TYPEUT3 = new String("UT3"); // Urban Terror Type
+
+// Proper text for the game types
 public static final String TEXTSTANDARD = new String("Standard"); // Standard Text
 public static final String TEXTARENA = new String("Rocket Arena"); // Arena Text
 public static final String TEXTHH3 = new String("Headhunters"); // Headhunters Text
 public static final String TEXTUT3 = new String("Urban Terror"); // Urban Terror Text
+
+// Static strings for the tags
 public static final String OPENTAG = new String("<Q3LOG "); // Start of template tag
 public static final String FAKEOPENTAG = new String("<Q3L0G "); // Fake start of template tag
 public static final String CLOSETAG = new String(">"); // End of template tag
-public static final String LINENAME = "NAME"; // Internal (Label for the name of the tag)
-public static final String LINETYPE = "TYPE"; // Internal (Label for the type of the tag)
-public static final String LINEVALUE = "VALUE"; // Internal (Label for the type of the tag)
-public static final String STATICIM = new String("indiv_main.htm_"); // File name for Main Individual page
-public static final String STATICIOBELOW = new String("indiv_oponents_below.htm_"); // File name for Oponents Individual page (below average)
-public static final String STATICIOABOVE = new String("indiv_oponents_above.htm_"); // File name for Oponents Individual page (above average)
-public static final String STATICIW = new String("indiv_weapons.htm_"); // File name for Weapons Individual page
-public static final String STATICIOT = new String("indiv_oponents_total.htm_"); // File name for Oponents Totals Individual page
-public static final String STATICIWT = new String("indiv_weapons_total.htm_"); // File name for Weapons Totals Individual page
-public static final String STATICTABLE = new String("table_main.htm_"); // File name for Main page
-public static final String STATICROWABOVE = new String("table_row_above.htm_"); // File name for Main Table Row page (above average)
-public static final String STATICROWBELOW = new String("table_row_below.htm_"); // File name for Main Table Row page (below average)
-public static final String STATICTOTAL = new String("table_row_total.htm_"); // File name for Table Total Row page
-public static final String PROPSTATIC = new String("Templates"); // Static property name (for conf file)
-public static final String PROPTARGET = new String("Target"); // Target property name (for conf file)
-public static final String PROPCUTOFF = new String("Cutoff"); // Cutoff property name (for conf file)
-public static final String PROPSORT = new String("Sort"); // Default field to sort on (for conf file)
-public static final String PROPDIRECT = new String("Direct"); // Default direction to sort (for conf file)
-public static final String PROPALLSORT = new String("AllSort"); // What to sort  (for conf file)
-public static final String PROPSORTUP = new String("SortUp"); // Img to output for sorting up (for conf file)
-public static final String PROPSORTDOWN = new String("SortDown"); // Img to output for sorting down (for conf file)
-public static final String PROPTITLE0 = new String("Title0"); // The text for Kills (for conf file)
-public static final String PROPTITLE1 = new String("Title1"); // The text for Deaths (for conf file)
-public static final String PROPTITLE2 = new String("Title2"); // The text for Efficiency (for conf file)
-public static final String PROPTITLE3 = new String("Title3"); // The text for Suicides (for conf file)
-public static final String PROPTITLE4 = new String("Title4"); // The text for Rank (for conf file)
-public static final String PROPTITLE5 = new String("Title5"); // The text for Ratio (for conf file)
-public static final String PROPTITLEBEFORE = new String("SortTitleBefore"); // The text that goes before the sorted title (for conf file)
-public static final String PROPTITLEAFTER = new String("SortTitleAfter"); // The text that goes after the sorted title (for conf file)
-public static final String PROPIGNORE = new String("Ignore"); // List of users to ignore (for conf file)
-public static final String PROPIGNORESPLIT = new String("Split"); // The string used to split up the userlist for Ignore (for conf file)
-public static final String PROPCOLOURS = new String("Colours"); // Output user colours (for conf file)
-public static final String PROPBLACK = new String("Black"); // Colour for fun names
-public static final String PROPRED = new String("Red"); // Colour for fun names
-public static final String PROPGREEN = new String("Green"); // Colour for fun names
-public static final String PROPYELLOW = new String("Yellow"); // Colour for fun names
-public static final String PROPBLUE = new String("Blue"); // Colour for fun names
-public static final String PROPCYAN = new String("Cyan"); // Colour for fun names
-public static final String PROPMAGENTA = new String("Magenta"); // Colour for fun names
-public static final String PROPWHITE = new String("White"); // Colour for fun names
+public static final String LINENAME = "NAME"; // Label for the name of the tag
+public static final String LINETYPE = "TYPE"; // Label for the type of the tag
+public static final String LINEVALUE = "VALUE"; // Label for the type of the tag
 
+// Tag types
 public static final String TAGVALUE = "VALUE"; // Type of Tag that is replace by a value
 public static final String TAGSECTION = "SECTION"; // Type of Tag that is replaced by another file
 public static final String TAGSYSTEM = "SYSTEM"; // Type of Tag that is replaced by a system value
@@ -228,7 +299,9 @@ public static final String TAGURLUP = new String("UP");
 public static final String TAGURLDOWN = new String("DOWN");
 public static final String TAGLINKUP = new String("LINKUP");
 public static final String TAGCLOSE = new String("CLOSE");
+public static final String TAGPERCENT = new String("PERCENT");
 
+// System tag properties
 private static final String SYSDATE = "DATE"; // Value asking for Date
 private static final String SYSTIME = "TIME"; // Value asking for Time
 private static final String SYSPROGNAME = "PROGNAME"; // Value asking for our name
@@ -237,8 +310,53 @@ private static final String SYSPROGDESC = "PROGDESC"; // Value asking for our de
 private static final String SYSPROGFULL = "PROGFULL"; // Value asking for all the above 3 put together
 private static final String SYSPROGURL = "PROGURL"; // Value asking for our homepage
 private static final String SYSCUTOFF = "CUTOFF"; // Value asking for our Cutoff point
+private static final String SYSWEAPONS = "TOPWEAPONS"; // Value asking for our number of top weapons shown
 
 private static final String REPVALUE = "Q3LOGREP"; // Used when replacing a Pass tag in the templates
+
+// Template file static filenames
+public static final String STATICIM = new String("indiv_main.htm_"); // File name for Main Individual page
+public static final String STATICIOBELOW = new String("indiv_oponents_below.htm_"); // File name for Oponents Individual page (below average)
+public static final String STATICIOABOVE = new String("indiv_oponents_above.htm_"); // File name for Oponents Individual page (above average)
+public static final String STATICIW = new String("indiv_weapons.htm_"); // File name for Weapons Individual page
+public static final String STATICIOT = new String("indiv_oponents_total.htm_"); // File name for Oponents Totals Individual page
+public static final String STATICIWT = new String("indiv_weapons_total.htm_"); // File name for Weapons Totals Individual page
+public static final String STATICTABLE = new String("table_main.htm_"); // File name for Main page
+public static final String STATICTABLEWEAPONS = new String("table_weapons.htm_"); // File name for Weapons summary on main page
+public static final String STATICROWABOVE = new String("table_row_above.htm_"); // File name for Main Table Row page (above average)
+public static final String STATICROWBELOW = new String("table_row_below.htm_"); // File name for Main Table Row page (below average)
+public static final String STATICTOTAL = new String("table_row_total.htm_"); // File name for Table Total Row page
+
+// Property file static strings
+public static final String PROPSTATIC = new String("Templates"); // Static property name (for conf file)
+public static final String PROPTARGET = new String("Target"); // Target property name (for conf file)
+public static final String PROPCUTOFF = new String("Cutoff"); // Cutoff property name (for conf file)
+public static final String PROPTOPWEAPONS = new String("TopWeapons"); // How many of the top weapons to list (for the conf file)
+public static final String PROPSORT = new String("Sort"); // Default field to sort on (for conf file)
+public static final String PROPDIRECT = new String("Direct"); // Default direction to sort (for conf file)
+public static final String PROPALLSORT = new String("AllSort"); // What to sort  (for conf file)
+public static final String PROPSORTUP = new String("SortUp"); // Img to output for sorting up (for conf file)
+public static final String PROPSORTDOWN = new String("SortDown"); // Img to output for sorting down (for conf file)
+public static final String PROPTITLE0 = new String("Title0"); // The text for Kills (for conf file)
+public static final String PROPTITLE1 = new String("Title1"); // The text for Deaths (for conf file)
+public static final String PROPTITLE2 = new String("Title2"); // The text for Efficiency (for conf file)
+public static final String PROPTITLE3 = new String("Title3"); // The text for Suicides (for conf file)
+public static final String PROPTITLE4 = new String("Title4"); // The text for Rank (for conf file)
+public static final String PROPTITLE5 = new String("Title5"); // The text for Ratio (for conf file)
+public static final String PROPTITLEBEFORE = new String("SortTitleBefore"); // The text that goes before the sorted title (for conf file)
+public static final String PROPTITLEAFTER = new String("SortTitleAfter"); // The text that goes after the sorted title (for conf file)
+public static final String PROPIGNORE = new String("Ignore"); // List of users to ignore (for conf file)
+public static final String PROPIGNORESPLIT = new String("Split"); // The string used to split up the userlist for Ignore (for conf file)
+public static final String PROPLINK = new String("LinkWeapons"); // Wether to use the linked weapons lists (for conf file)
+public static final String PROPCOLOURS = new String("Colours"); // Output user colours (for conf file)
+public static final String PROPBLACK = new String("Black"); // Colour for fun names (for conf file)
+public static final String PROPRED = new String("Red"); // Colour for fun names (for conf file)
+public static final String PROPGREEN = new String("Green"); // Colour for fun names (for conf file)
+public static final String PROPYELLOW = new String("Yellow"); // Colour for fun names (for conf file)
+public static final String PROPBLUE = new String("Blue"); // Colour for fun names (for conf file)
+public static final String PROPCYAN = new String("Cyan"); // Colour for fun names (for conf file)
+public static final String PROPMAGENTA = new String("Magenta"); // Colour for fun names (for conf file)
+public static final String PROPWHITE = new String("White"); // Colour for fun names (for conf file)
 
 private static final String PATHSEP = new String("@"); // What seperates the paths in the command line arguments
 private static final String LINESEP = LogTools.LINESEP; // The line seperator for this system
@@ -259,6 +377,7 @@ private Vector vIndivWeap = new Vector();
 private Vector vIndivTOpo = new Vector();
 private Vector vIndivTWea = new Vector();
 private Vector vTableMain = new Vector();
+private Vector vTableWeapons = new Vector();
 private Vector vTableRowsAbove = new Vector();
 private Vector vTableRowsBelow = new Vector();
 private Vector vTableTRow = new Vector();
@@ -282,15 +401,17 @@ private String sIgnore = new String(); // The ignore list of usernames
 private String sIgnoreSplit = new String(); // The split character for the ignore list
 private String[] sTitles = new String[6]; // The titles
 private String[] aColours = new String[8]; // The colours for fun names
+private String sType = new String(); // The type of this run
+private String sWeaponsList[]; // The weapons list
 
 // The following Vectors hold the lines to be replaced in the template files
 private Vector vWeapons = new Vector();
 private Vector vTOponent = new Vector();
 private Vector vRowsAbove = new Vector();
 private Vector vRowsBelow = new Vector();
+private Vector vMainWeapons = new Vector();
 
 // The following Hashtables hold values to use to replace things in the template files
-private Hashtable htWeapon = new Hashtable();
 private Hashtable htMainUser = new Hashtable();
 private Hashtable htHold = new Hashtable();
 private Hashtable htHoldInd = new Hashtable();
@@ -304,11 +425,14 @@ private Hashtable htFun = new Hashtable();
 private int iCutOff = 0;
 private int iSort = 0;
 private int iAllSort = 0;
+private int iTopWeapons = 0;
 
 // The direction to sort in (from the conf file)
 private boolean bDirect = false;
 // Output user colours (from the conf file)
 private boolean bColours = true;
+// Use the linked weapons lists (from the conf file)
+private boolean bLinked = false;
 
   //  Constructer for the class
   //
@@ -344,12 +468,19 @@ private boolean bColours = true;
   //  Date          :   12th September 2002
   //
   //
-  private String[] getWeaponsList(String sParam) {
-  String [] sWeaponsList = TXTQ3WEAPONS;
-    if (sParam.equalsIgnoreCase(TYPEARENA)) { sWeaponsList = TXTQ3WEAPONS; } 
-    else if (sParam.equalsIgnoreCase(TYPEHH3)) { sWeaponsList = TXTHH3WEAPONS; } 
-    else if (sParam.equalsIgnoreCase(TYPEUT3)) { sWeaponsList = TXTUT3WEAPONS; }
-    return sWeaponsList;
+  private void getWeaponsList(String sParam) {
+    sWeaponsList = TXTQ3WEAPONS;
+    if (bLinked) { sWeaponsList = TXTQ3WEAPONSLINK; }
+    if (sParam.equalsIgnoreCase(TYPEARENA)) { 
+      if (bLinked) { sWeaponsList = TXTQ3WEAPONSLINK; }
+      else { sWeaponsList = TXTQ3WEAPONS; }
+    } else if (sParam.equalsIgnoreCase(TYPEHH3)) { 
+      if (bLinked) { sWeaponsList = TXTHH3WEAPONSLINK; }
+      else { sWeaponsList = TXTHH3WEAPONS; }
+    } else if (sParam.equalsIgnoreCase(TYPEUT3)) { 
+      if (bLinked) { sWeaponsList = TXTUT3WEAPONSLINK; }
+      else { sWeaponsList = TXTUT3WEAPONS; }
+    }
   }
 
   //  Returns true if the passed in type is valid or else returns false
@@ -398,9 +529,10 @@ private boolean bColours = true;
       prProp.load(new FileInputStream(fProp));
       bReturn = true;
       if (myTools.checkString((String)prProp.get(PROPSTATIC))) { sStatic = (String)prProp.get(PROPSTATIC); }
-      else { throw new IllegalArgumentException("Static needs to be set in the config file"); }
+      else { throw new IllegalArgumentException(PROPSTATIC + " needs to be set in the config file"); }
       sTarget = prProp.getProperty(PROPTARGET,"_blank");
       iCutOff = new Integer(prProp.getProperty(PROPCUTOFF,"0")).intValue();
+      iTopWeapons = new Integer(prProp.getProperty(PROPTOPWEAPONS,"0")).intValue();
       iSort = new Integer(prProp.getProperty(PROPSORT,"2")).intValue();
       bDirect = new Boolean(prProp.getProperty(PROPDIRECT,"true")).booleanValue();
       iAllSort = new Integer(prProp.getProperty(PROPALLSORT,"0")).intValue();
@@ -418,6 +550,7 @@ private boolean bColours = true;
       sTitleAfter = prProp.getProperty(PROPTITLEAFTER,new String());
       sIgnore = prProp.getProperty(PROPIGNORE,new String());
       sIgnoreSplit = prProp.getProperty(PROPIGNORESPLIT,";");
+      bLinked = new Boolean(prProp.getProperty(PROPLINK,"false")).booleanValue();
       bColours = new Boolean(prProp.getProperty(PROPCOLOURS,"true")).booleanValue();
       aColours[0] = prProp.getProperty(PROPBLACK,"Black");
       aColours[1] = prProp.getProperty(PROPRED,"Red");
@@ -476,6 +609,8 @@ private boolean bColours = true;
     vIndivTOpo = myTools.readFile(fIn);
     fIn = new File(sStatic + STATICTABLE);
     vTableMain = myTools.readFile(fIn);
+    fIn = new File(sStatic + STATICTABLEWEAPONS);
+    vTableWeapons = myTools.readFile(fIn);
     fIn = new File(sStatic + STATICROWABOVE);
     vTableRowsAbove = myTools.readFile(fIn);
     fIn = new File(sStatic + STATICROWBELOW);
@@ -531,6 +666,8 @@ private boolean bColours = true;
       sReturn = PROGURL;
     } else if (sName.equals(SYSCUTOFF)) {
       sReturn = new Integer(iCutOff).toString();
+    } else if (sName.equals(SYSWEAPONS)) {
+      sReturn = new Integer(iTopWeapons).toString();
     }
     return sReturn;
   }
@@ -592,39 +729,6 @@ private boolean bColours = true;
   }
   private String swapTags(Vector vInput,Hashtable htTags) { return swapTags(vInput,htTags,sTitles.length); }
 
-  //  Adds the kills to the position specified in the users (specified) array
-  //
-  //  Written by    :   Stuart Butcher
-  //
-  //  Date          :   12th September 2002
-  //
-  //
-  private void addKills(String sUser,int iKills,int iPos) {
-  LogTotals ltUser = new LogTotals(1);
-    if (htMainUser.get(sUser) != null) {
-      ltUser = (LogTotals)htMainUser.get(sUser);
-    }
-    ltUser.addNum(iPos,iKills);
-    htMainUser.put(sUser,ltUser);
-  }
-
-  //  Returns the kills for the current user
-  //
-  //  Written by    :   Stuart Butcher
-  //
-  //  Date          :   12th September 2002
-  //
-  //
-  private int getKills() {
-  int iReturn = 0;
-  int iWeapon = 0;
-    for (Enumeration eWeapon = htWeapon.keys();eWeapon.hasMoreElements();) {
-      iWeapon = ((Integer)eWeapon.nextElement()).intValue();
-      iReturn += ((Integer)htWeapon.get(new Integer(iWeapon))).intValue();
-    }
-    return iReturn;
-  }
-
   //  Builds up the main user details from the many hashtables
   //
   //  Written by    :   Stuart Butcher
@@ -632,110 +736,82 @@ private boolean bColours = true;
   //  Date          :   12th September 2002
   //
   //
-  private void buildUsers(String sWeaponsList[]) throws IOException,IllegalArgumentException  {
+  private void buildUsers() throws IOException,IllegalArgumentException  {
   int iKills = 0;
   int iKill = 0;
   int iDeaths = 0;
   int iWeapon = 0;
   int iPercent = 0;
-  int[] iWeaponTotals;
   Float[] fSortInd = new Float[3];
-  Hashtable htPerson = new Hashtable();
   Hashtable htPeople = new Hashtable();
+  Hashtable htHold = new Hashtable();
   Integer iOponent = new Integer(0);
   Integer iUser = new Integer(0);
   String sWeapon = new String();
   String sOponent = new String();
   String sUser = new String();
   String sFun = new String();
+  LogTotals myWeapTotals;
+  LogTotals myIndTotals;
+  
+    myTotals = myParser.getGrandTotal();
+    
     for (Enumeration eKills = htKills.keys();eKills.hasMoreElements();) {
       htHoldInd = new Hashtable();
       iUser = (Integer)eKills.nextElement();
       sUser = (String)htUsers.get(iUser);
-      myIndTotals = new LogTotals();
-      iWeaponTotals = new int[sWeaponsList.length];
-      htPeople = (Hashtable)htKills.get(iUser);
-      vWeapons = new Vector();
-      vTOponent = new Vector();
+      htHold = (Hashtable)htKills.get(iUser);
+      
+      myIndTotals = (LogTotals)htHold.get(LogParser.TXTTOTALS);
+      htPeople = (Hashtable)htHold.get(LogParser.TXTOPONENTS);
+
       for (Enumeration ePeople = htPeople.keys();ePeople.hasMoreElements();) {
+        
         iOponent = (Integer)ePeople.nextElement();
         sOponent = (String)htUsers.get(iOponent);
-        if (sOponent.equals(sUser)) {
-          htWeapon = (Hashtable)htPeople.get(iUser);
-          addKills(sUser,getKills(),LogTotals.SUICIDES);
-        } else {
-          vWeapons = new Vector();
-          iKills = 0;
-          htWeapon = (Hashtable)htPeople.get(iOponent);
-          for (Enumeration eWeapon = htWeapon.keys();eWeapon.hasMoreElements();) {
-            iWeapon = ((Integer)eWeapon.nextElement()).intValue();
-            sWeapon = sWeaponsList[iWeapon];
-            iKill = ((Integer)htWeapon.get(new Integer(iWeapon))).intValue();
-            iWeaponTotals[iWeapon] += iKill;
-            iKills += iKill;
-            htTags = new Hashtable();
-            htTags.put(TAGWEAPON,sWeapon);
-            htTags.put(TAGKILLS,new Integer(iKill).toString());
-            vWeapons.add(swapTags(vIndivWeap,htTags));
-          }
-          if (sUser.equalsIgnoreCase(TXTSUICIDE)) {
-            addKills(sOponent,iKills,LogTotals.SUICIDES);
-          } else {
-            htPerson = (Hashtable)htKills.get(iOponent);
-            if (htPerson != null) {
-              htWeapon = (Hashtable)htPerson.get(iUser);
-              if (htWeapon != null) { 
-                iDeaths = getKills();
-              } else { iDeaths = 0; }
-            } else { iDeaths = 0; }
-            myIndTotals.addKill(iKills);
-            myIndTotals.addDeath(iDeaths);
-            myIndTotals.addUser(true);
-            iPercent = LogTotals.workEfficiency(iKills,iDeaths,0);
+        myWeapTotals = (LogTotals)htPeople.get(iOponent);
 
-            htTags = new Hashtable();
-            sFun = sOponent;
-            if ((bColours) && (myTools.checkString((String)htFun.get(sUser)))) { 
-              sFun = myTools.stripChars((String)htFun.get(sOponent),aColours); 
-            }
-            htTags.put(TAGOPONENT,sFun);
-            htTags.put(TAGKILLS,new Integer(iKills).toString());
-            htTags.put(TAGDEATHS,new Integer(iDeaths).toString());
-            htTags.put(TAGEFFICIENCY,new Integer(iPercent).toString());
-            htTags.put(TAGWEAPONS,myTools.getString(vWeapons));
-            htHoldInd.put(sOponent,htTags);
-            fSortInd = new Float[3];
-            fSortInd[LogTotals.KILLS] = new Float(iKills);
-            fSortInd[LogTotals.DEATHS] = new Float(iDeaths);
-            fSortInd[LogTotals.EFFICIENCY] = new Float(iPercent);
-            htSortInd.put(sOponent,fSortInd);
-            addKills(sOponent,iKills,LogTotals.DEATHS);
-          }
-        }
-      }
-      if (!sUser.equalsIgnoreCase(TXTSUICIDE)) {
-        addKills(sUser,myIndTotals.getActualKills(),LogTotals.KILLS);
         vWeapons = new Vector();
-        for (int iLoop = 0;iLoop < sWeaponsList.length;iLoop++) {
-          if (iWeaponTotals[iLoop] > 0) {
-            htTags = new Hashtable();
-            htTags.put(TAGWEAPON,sWeaponsList[iLoop]);
-            htTags.put(TAGKILLS,new Integer(iWeaponTotals[iLoop]).toString());
-            vWeapons.add(swapTags(vIndivTWea,htTags));
-          }
-        }
-        htTags = new Hashtable();
-        htTags.put(TAGKILLS,new Integer(myIndTotals.getKills()).toString());
-        htTags.put(TAGDEATHS,new Integer(myIndTotals.getDeaths()).toString());
-        htTags.put(TAGEFFICIENCY,new Integer(myIndTotals.getEfficiency()).toString());
-        htTags.put(TAGWEAPONS,myTools.getString(vWeapons));
-        vTOponent.add(swapTags(vIndivTOpo,htTags));
-        htHoldTotals.put(sUser,myTools.getString(vTOponent));
+        iKills = myWeapTotals.getFrags();
+        vWeapons = getWeapons(myWeapTotals,myWeapTotals.getFrags(),100,vIndivWeap);
+        iDeaths = myWeapTotals.getActualDeaths();
+        iPercent = LogTotals.workEfficiency(iKills,iDeaths,0);
 
-        sortIndiv(sUser);
-        
-        htSortInd = new Hashtable();
+        htTags = new Hashtable();
+        sFun = sOponent;
+        if ((bColours) && (myTools.checkString((String)htFun.get(sUser)))) { 
+          sFun = myTools.stripChars((String)htFun.get(sOponent),aColours); 
+        }
+
+        htTags.put(TAGOPONENT,sFun);
+        htTags.put(TAGKILLS,new Integer(iKills).toString());
+        htTags.put(TAGDEATHS,new Integer(iDeaths).toString());
+        htTags.put(TAGEFFICIENCY,new Integer(iPercent).toString());
+        htTags.put(TAGWEAPONS,myTools.getString(vWeapons));
+
+        htHoldInd.put(sOponent,htTags);
+        fSortInd = new Float[3];
+        fSortInd[LogTotals.KILLS] = new Float(iKills);
+        fSortInd[LogTotals.DEATHS] = new Float(iDeaths);
+        fSortInd[LogTotals.EFFICIENCY] = new Float(iPercent);
+        htSortInd.put(sOponent,fSortInd);
       }
+
+      htMainUser.put(sUser,myIndTotals);
+
+      vWeapons = getWeapons(myIndTotals,myIndTotals.getFrags(),100,vIndivTWea);
+      
+      htTags = new Hashtable();
+      htTags.put(TAGKILLS,new Integer(myIndTotals.getKills()).toString());
+      htTags.put(TAGDEATHS,new Integer(myIndTotals.getDeaths()).toString());
+      htTags.put(TAGEFFICIENCY,new Integer(myIndTotals.workEfficiency(myIndTotals.getActualKills(),myIndTotals.getActualDeaths(),0)).toString());
+      htTags.put(TAGWEAPONS,myTools.getString(vWeapons));
+      
+      vTOponent = new Vector();
+      vTOponent.add(swapTags(vIndivTOpo,htTags));
+      htHoldTotals.put(sUser,myTools.getString(vTOponent));
+      sortIndiv(sUser,myIndTotals);
+      htSortInd = new Hashtable();
     }
   }
 
@@ -765,9 +841,9 @@ private boolean bColours = true;
       if (iAllSort < 2) { sAddOn = new String(); }
       sLink = "<A HREF=\"" + sMiddle + "_" + sUser + sAddOn + ".html\" TARGET=\"" + sTarget + "\">";
       
-      iKills = ltUser.getKills();
-      iDeaths = ltUser.getDeaths();
-      iSuicides = ltUser.getSuicides();
+      iKills = ltUser.getActualKills();
+      iDeaths = ltUser.getActualDeaths();
+      iSuicides = ltUser.getActualSuicides();
       
       htTags = new Hashtable();
       htTags.put(TAGUSERLINK,sLink);
@@ -783,13 +859,12 @@ private boolean bColours = true;
       
       htHold.put(sUser,htTags);
       
-      myTotals.addFrag(iKills);
       if (iKills + iDeaths + iSuicides >= iCutOff) {
         
         myTotals.addKill(iKills);
         myTotals.addDeath(iDeaths);
         myTotals.addSuicide(iSuicides);
-        myTotals.addUser(true);
+        myTotals.addUser(sUser,true);
         
         fSort = new Float[6];
         fSort[LogTotals.KILLS] = new Float(iKills);
@@ -801,7 +876,7 @@ private boolean bColours = true;
         htSort.put(sUser,fSort);
 
       } else {
-        myTotals.addUser(false);
+        myTotals.addUser(sUser,false);
       }
     }
   }
@@ -824,6 +899,7 @@ private boolean bColours = true;
   int iBegin;int iFinish;
     if (iAllSort > 0) { iStart = 0; iEnd = 2; iBegin = 0; iFinish = 6; bForwards = true; sDir = "D"; } 
     else { iStart = 0; iEnd = 1; iBegin = iSort; iFinish = iSort + 1; bForwards = bDirect; sDir = ""; }
+    vMainWeapons = getWeapons(myTotals,myTotals.getFrags(),iTopWeapons,vTableWeapons);
     for (int iLoop = iStart;iLoop < iEnd;iLoop++) {
       for (int iBase = iBegin;iBase < iFinish;iBase++) {
         vSorted = myTools.sortHash(htSort,iBase,bForwards);
@@ -840,6 +916,35 @@ private boolean bColours = true;
     }
   }
 
+  //  Gets the weapons in order and puts them into the returned vector
+  //
+  //  Written by    :   Stuart Butcher
+  //
+  //  Date          :   27th September 2002
+  //
+  //
+  private Vector getWeapons(LogTotals myTotals,int iFrags,int iMaximum,Vector vIn) {
+  Vector vReturn = new Vector();
+  Hashtable htHold = myTotals.getWeapons();
+  String[] aWeapons = (String[])htHold.get(LogTotals.WEAPONS);
+  int[] aFrags = (int[])htHold.get(LogTotals.FRAGS);
+  float fFrags = new Float(iFrags).floatValue();
+  String sPercent;
+  int iTop;
+    if (aWeapons.length > iMaximum) { iTop = iMaximum; }
+    else { iTop = aWeapons.length; }
+    for (int iLoop = 0;iLoop < iTop;iLoop++) {
+      sPercent = myTools.decimalPlaces(new Float((100 / fFrags) * aFrags[iLoop]).toString());
+      htHold = new Hashtable();
+      htHold.put(TAGMEMBER,new Integer(iLoop + 1).toString());
+      htHold.put(TAGWEAPON,aWeapons[iLoop]);
+      htHold.put(TAGKILLS,new Integer(aFrags[iLoop]).toString());
+      htHold.put(TAGPERCENT,sPercent);
+      vReturn.add(swapTags(vIn,htHold));
+    }
+    return vReturn;
+  }
+
   //  Sorts the users individual stats
   //
   //  Written by    :   Stuart Butcher
@@ -847,7 +952,7 @@ private boolean bColours = true;
   //  Date          :   12th September 2002
   //
   //
-  private void sortIndiv(String sMainUser) throws IOException,IllegalArgumentException  {
+  private void sortIndiv(String sMainUser,LogTotals myIndTotals) throws IOException,IllegalArgumentException  {
   Vector vSorted;
   String sDir;
   String sPass = new String();
@@ -972,6 +1077,7 @@ private boolean bColours = true;
     htTags.put(TAGUSERS,new Integer(myTotals.getTotalUsers()).toString());
     htTags.put(TAGABOVE,myTools.getString(vRowsAbove));
     htTags.put(TAGBELOW,myTools.getString(vRowsBelow));
+    htTags.put(TAGWEAPONS,myTools.getString(vMainWeapons));
     htTags.put(TAGTOTALS,sTotals);
     if (iAllSort > 0) { 
       htTags.put(TAGURLUP,sSortUp);
@@ -990,18 +1096,15 @@ private boolean bColours = true;
   //  Date          :   12th September 2002
   //
   //
-  protected void outputLog(String sLocOutDir,String sLocServer,String sLocAdd) throws IOException,IllegalArgumentException {
-  String sWeaponsList[] = getWeaponsList(sLocAdd);
-  String sType = getType(sLocAdd);
+  protected void outputLog(String sLocOutDir,String sLocServer) throws IOException,IllegalArgumentException {
   sTitle = new String("Quake 3 Arena - " + sType + " Stats (" + sLocServer + ")");
     
     sOutDir = sLocOutDir;
     sServer = sLocServer;
-    sAdd = sLocAdd;
     
     readStatic();
 
-    buildUsers(sWeaponsList);
+    buildUsers();
     
     buildTable();
 
@@ -1009,6 +1112,20 @@ private boolean bColours = true;
 
     sortUsers();
     
+  }
+
+  //  Sets up the parser with the appropriate values
+  //
+  //  Written by    :   Stuart Butcher
+  //
+  //  Date          :   27th September 2002
+  //
+  //
+  private void setupParser(String sLocAdd) {
+    sAdd = sLocAdd;
+    getWeaponsList(sAdd);
+    myParser = new LogParser(sWeaponsList);
+    sType = getType(sAdd);
   }
 
   //  Performs a full parse of a log file
@@ -1023,6 +1140,7 @@ private boolean bColours = true;
   boolean bDelete = new Boolean(sDelete).booleanValue();
   File fLog;
   int iLoop = 0;
+    myParser = new LogParser();
     try {
       for (iLoop = 0;iLoop < aLog.length;iLoop++) {
         fLog = new File(aLog[iLoop]);
@@ -1044,6 +1162,7 @@ private boolean bColours = true;
   String[] aInput = myTools.split(sInput,PATHSEP);
   File fInput;
   boolean bOutput = true;
+    setupParser(sType);
     htKills = new Hashtable();
     if (checkType(sType)) {
       for (int iLoop = 0;iLoop < aInput.length;iLoop++) {
@@ -1054,7 +1173,7 @@ private boolean bColours = true;
           throw new IllegalArgumentException("File " + aInput[iLoop] + " doesn't exist");
         }
       }
-      if (bOutput) { outputLog(sOutDir,sServer,sType); }
+      if (bOutput) { outputLog(sOutDir,sServer); }
     } else {
       throw new IllegalArgumentException("Invalid Type - " + sType);
     }
@@ -1076,13 +1195,14 @@ private boolean bColours = true;
   String sALog = new String();
   File fInput;
   int iLoop = 0;
+    setupParser(sType);
     try {
       htKills = new Hashtable();
       if (checkType(sType)) {
         for (iLoop = 0;iLoop < aLog.length;iLoop++) {
           fLog = new File(aLog[iLoop]);
           sALog = fLog.getPath();
-          if ((addLog(aLog[iLoop],sInput,true,bDelete)) || (bForce)) {
+          if ((addLog(aLog[iLoop],sInput,false,bDelete)) || (bForce)) {
             getLog(sInput,false);
             bGotIt = true;
           }
@@ -1094,7 +1214,7 @@ private boolean bColours = true;
       System.out.println("The log file " + sALog + " was not found");
     }
     if (bGotIt) {
-      outputLog(sOutDir,sServer,sType);
+      outputLog(sOutDir,sServer);
     }
   }
 
@@ -1149,28 +1269,6 @@ private boolean bColours = true;
             "   Delete      - (True|False) Delete logfile after parsing?";
     sError = "Error: Incorrect arguments set" + LINESEP + sHelp;
     sProp = "There was an error with your config file." + LINESEP + sHelp;
-    /*
-      arg[0] = Action (parse,output,both)
-      if (Action != help) { arg[1] = ConfigFile }
-      if (Action == Parse) {
-        arg[2] = LogName|LogName
-        arg[3] = InputName
-        arg[4] = Delete
-      } else if (Action == Output) {
-        arg[2] = InputName|InputName
-        arg[3] = OutPutDir
-        arg[4] = Server Name
-        arg[5] = Server Type (standard,arena,hh3,ut)
-      } else if (Action == Both) {
-        arg[2] = LogName|LogName
-        arg[3] = InputName
-        arg[4] = OutPutDir
-        arg[5] = Server Name
-        arg[6] = Server Type (standard,arena,hh3,ut)
-        arg[7] = Delete
-        arg[8] = Force Output
-      }
-    */
     if ((iLen > 0) && (iLen < 10)) { 
       try {
         sAction = args[0];

@@ -24,6 +24,18 @@
 </TABLE>
 <BR>
 <BR>
+<H2>Top <Q3LOG TYPE="System" NAME="TopWeapons"> Weapons</H2>
+<TABLE WIDTH=85% BORDERCOLORDARK=GRAY BORDERCOLORLIGHT=WHITE BORDER=1>
+  <TR>
+    <TH>Place</TH>
+    <TH>Weapon</TH>
+    <TH>Kills</TH>
+    <TH>Percent</TH>
+  </TR>
+<Q3LOG TYPE="Section" NAME="Weapons">
+</TABLE>
+<BR>
+<BR>
 Please Note: User involved in less than <Q3LOG TYPE="System" NAME="CutOff"> frags are not listed here.
 <H5>
 Last Updated - <Q3LOG TYPE="System" NAME="Time"> <Q3LOG TYPE="System" NAME="Date">
