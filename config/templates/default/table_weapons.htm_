@@ -1,0 +1,6 @@
+  <TR>
+    <TD><Q3LOG TYPE="Value" NAME="Member"></TD>
+    <TD><Q3LOG TYPE="Value" NAME="Weapon"></TD>
+    <TD ALIGN=RIGHT><Q3LOG TYPE="Value" NAME="Kills"></TD>
+    <TD ALIGN=RIGHT><Q3LOG TYPE="Value" NAME="Percent">%</TD>
+  </TR>

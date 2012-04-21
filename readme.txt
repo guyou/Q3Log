@@ -1,4 +1,4 @@
-Q3Log v2.2 ReadMe
+Q3Log v2.3 ReadMe
 =================
 
 (Copyright Stuart Butcher <stu@wilf.co.uk> 2002)
@@ -26,9 +26,10 @@ It will also generate stats for Rocket Arena 3, Urban Terror and Headhunters 3.
 
 It is written entirely in Java, and should work with Java 2 (1.2.2) and higher.  A full Runtime Environment is needed to use this program, but it should work under any OS there is a Runtime Environment for.
 
-2.  New Features
-================
+2.  New Features (since 2.1)
+============================
 
+  - v2.3 is basically v2.2 code, but in a better layout and with extra output styles.
   - TopWeapons feature (conf file) that outputs the top X most used weapons for the server
   - LinkWeapons feature (conf file) that allows users to specify that weapons should be linked 
     into one output weapon, i.e. the Rocket Launcher (Explosion) weapon is linked to the Rocket Launcher 

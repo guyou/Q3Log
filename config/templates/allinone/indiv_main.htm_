@@ -1,0 +1,25 @@
+<HTML>
+<HEAD>
+</HEAD>
+<BODY BGCOLOR="#FBFFBF" TEXT="BLACK">
+<LINK REL=stylesheet TYPE="text/css" HREF="main.css" TITLE="Main Style Sheet">
+<CENTER>
+<U><Q3LOG TYPE="Value" NAME="User"></U>
+<TABLE WIDTH=98% BORDER=1>
+  <TR BGCOLOR="#F3BFFF">
+    <TH>Place</TH>
+    <TH>Oponent</TH>
+    <TH><Q3LOG TYPE="TITLE" NAME="0"> <Q3LOG TYPE="Pass" NAME="LinkUp" VALUE="_0U.html"><Q3LOG TYPE="Value" NAME="Up"><Q3LOG TYPE="Value" NAME="CLOSE"> <Q3LOG TYPE="Pass" NAME="LinkUp" VALUE="_0D.html"><Q3LOG TYPE="Value" NAME="Down"><Q3LOG TYPE="Value" NAME="CLOSE"></TH>
+    <TH><Q3LOG TYPE="TITLE" NAME="1"> <Q3LOG TYPE="Pass" NAME="LinkUp" VALUE="_1U.html"><Q3LOG TYPE="Value" NAME="Up"><Q3LOG TYPE="Value" NAME="CLOSE"> <Q3LOG TYPE="Pass" NAME="LinkUp" VALUE="_1D.html"><Q3LOG TYPE="Value" NAME="Down"><Q3LOG TYPE="Value" NAME="CLOSE"></TH>
+    <TH><Q3LOG TYPE="TITLE" NAME="2"> <Q3LOG TYPE="Pass" NAME="LinkUp" VALUE="_2U.html"><Q3LOG TYPE="Value" NAME="Up"><Q3LOG TYPE="Value" NAME="CLOSE"> <Q3LOG TYPE="Pass" NAME="LinkUp" VALUE="_2D.html"><Q3LOG TYPE="Value" NAME="Down"><Q3LOG TYPE="Value" NAME="CLOSE"></TH>
+    <TH>Weapons</TH>
+  </TR>
+<Q3LOG TYPE="Section" NAME="Above">
+<TR><TD COLSPAN=6></TD></TR>
+<Q3LOG TYPE="Section" NAME="Totals">
+<TR><TD COLSPAN=6></TD></TR>
+<Q3LOG TYPE="Section" NAME="Below">
+</TABLE>
+</CENTER>
+</BODY>
+</HTML>

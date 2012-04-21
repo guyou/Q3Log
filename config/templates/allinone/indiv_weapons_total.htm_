@@ -1,0 +1,4 @@
+        <TR>
+          <TD WIDTH=50%><Q3LOG TYPE="Value" NAME="Weapon">:</TD>
+          <TD WIDTH=25% ALIGN=RIGHT><Q3LOG TYPE="Value" NAME="Percent">%</TD>
+        </TR>

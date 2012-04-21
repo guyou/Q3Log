@@ -1,0 +1,66 @@
+<HTML>
+<HEAD>
+</HEAD>
+<BODY BGCOLOR="#FBFFBF" TEXT="BLACK">
+<LINK REL=stylesheet TYPE="text/css" HREF="main.css" TITLE="Main Style Sheet">
+<CENTER>
+<TABLE WIDTH=100% BORDER=0>
+<TR>
+<TD WIDTH=80% ALIGN=CENTER VALIGN=CENTER>
+<H1>MyServers Quake 3 Stats</H1>
+</TD>
+<TD WIDDH=20%></TD>
+</TR>
+<TR>
+<TD WIDTH=80% VALIGN=TOP>
+<BR>
+
+<CENTER>
+<H3>Overall Results (<Q3LOG TYPE="Value" NAME="Frags"> Frags, <Q3LOG TYPE="Value" NAME="Users"> Users)</H3>
+
+<TABLE WIDTH=95% BORDERCOLORDARK=BLACK BORDERCOLORLIGHT=GRAY BORDER=1>
+  <TR BGCOLOR="#F3BFFF">
+    <TH>Place</TH>
+    <TH>User</TH>
+    <TH><Q3LOG TYPE="TITLE" NAME="0"> <Q3LOG TYPE="Pass" NAME="LinkUp" VALUE="_0U.html"><Q3LOG TYPE="Value" NAME="Up"><Q3LOG TYPE="Value" NAME="CLOSE"> <Q3LOG TYPE="Pass" NAME="LinkUp" VALUE="_0D.html"><Q3LOG TYPE="Value" NAME="Down"><Q3LOG TYPE="Value" NAME="CLOSE"></TH>
+    <TH><Q3LOG TYPE="TITLE" NAME="1"> <Q3LOG TYPE="Pass" NAME="LinkUp" VALUE="_1U.html"><Q3LOG TYPE="Value" NAME="Up"><Q3LOG TYPE="Value" NAME="CLOSE"> <Q3LOG TYPE="Pass" NAME="LinkUp" VALUE="_1D.html"><Q3LOG TYPE="Value" NAME="Down"><Q3LOG TYPE="Value" NAME="CLOSE"></TH>
+    <TH><Q3LOG TYPE="TITLE" NAME="3"> <Q3LOG TYPE="Pass" NAME="LinkUp" VALUE="_3U.html"><Q3LOG TYPE="Value" NAME="Up"><Q3LOG TYPE="Value" NAME="CLOSE"> <Q3LOG TYPE="Pass" NAME="LinkUp" VALUE="_3D.html"><Q3LOG TYPE="Value" NAME="Down"><Q3LOG TYPE="Value" NAME="CLOSE"></TH>
+    <TH><Q3LOG TYPE="TITLE" NAME="2"> <Q3LOG TYPE="Pass" NAME="LinkUp" VALUE="_2U.html"><Q3LOG TYPE="Value" NAME="Up"><Q3LOG TYPE="Value" NAME="CLOSE"> <Q3LOG TYPE="Pass" NAME="LinkUp" VALUE="_2D.html"><Q3LOG TYPE="Value" NAME="Down"><Q3LOG TYPE="Value" NAME="CLOSE"></TH>
+  </TR>
+<Q3LOG TYPE="Section" NAME="Above">
+<TR><TD COLSPAN=6></TD></TR>
+<Q3LOG TYPE="Section" NAME="Totals">
+<TR><TD COLSPAN=6></TD></TR>
+<Q3LOG TYPE="Section" NAME="Below">
+</TABLE>
+<BR><BR>
+<IFRAME NAME="individual" WIDTH=95% HEIGHT=200>You need IFrames for this</IFRAME>
+
+<BR>
+<BR>
+<BR>
+Get above <Q3LOG TYPE="System" NAME="CutOff"> frags and you will get listed.
+<H5>
+Stats right at <Q3LOG TYPE="System" NAME="Time"> on <Q3LOG TYPE="System" NAME="Date">
+<BR>
+Big up to <A HREF="<Q3LOG TYPE="System" NAME="ProgURL">" TARGET="_blank"><Q3LOG TYPE="System" NAME="ProgFull"></A>
+<BR>
+</H5>
+</TD>
+
+<TD WIDTH=20% VALIGN=TOP>
+<BR>
+<CENTER>
+<H3>Top <Q3LOG TYPE="System" NAME="TopWeapons"> Weapons</H3>
+</CENTER>
+<OL TYPE=1>
+<Q3LOG TYPE="Section" NAME="Weapons">
+</OL>
+</TD>
+
+</TR>
+</TABLE>
+
+</CENTER>
+</BODY>
+</HTML>

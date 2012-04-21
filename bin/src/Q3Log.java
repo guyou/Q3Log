@@ -32,7 +32,7 @@ private LogParser myParser;
 private LogTotals myTotals;
 
 // The program version
-public static final String PROGVER = new String("2.2"); 
+public static final String PROGVER = new String("2.3"); 
 // The programs name
 public static final String PROGNAME = new String("Q3Log"); 
 // The programs description

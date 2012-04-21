@@ -1,0 +1,12 @@
+  <TR>
+    <TD><FONT COLOR=GREEN><Q3LOG TYPE="Value" NAME="Member"></FONT></TD>
+    <TD>
+      <Q3LOG TYPE="Value" NAME="User_Link"><Q3LOG TYPE="Value" NAME="User"></A>
+    </TD>
+    <TD ALIGN=RIGHT><Q3LOG TYPE="Value" NAME="Kills"></TD>
+    <TD ALIGN=RIGHT><Q3LOG TYPE="Value" NAME="Deaths"></TD>
+    <TD ALIGN=RIGHT><Q3LOG TYPE="Value" NAME="Suicides"></TD>
+    <TD ALIGN=RIGHT><Q3LOG TYPE="Value" NAME="KillRatio"></TD>
+    <TD ALIGN=RIGHT><Q3LOG TYPE="Value" NAME="Rank"></TD>
+    <TD ALIGN=RIGHT><Q3LOG TYPE="Value" NAME="Efficiency">%</TD>
+  </TR>

@@ -1,0 +1,48 @@
+<HTML>
+<HEAD>
+</HEAD>
+<BODY BGCOLOR="BLACK" TEXT="LIGHTBLUE">
+<LINK REL=stylesheet TYPE="text/css" HREF="main.css" TITLE="Main Style Sheet">
+<CENTER>
+<H1><Q3LOG TYPE="Value" NAME="Title"></H1>
+<H2>Overall Results</H2>
+<H3>(<Q3LOG TYPE="Value" NAME="Frags"> Frags, <Q3LOG TYPE="Value" NAME="Users"> Users)</H3>
+<TABLE WIDTH=85% BORDERCOLORDARK=GRAY BORDERCOLORLIGHT=WHITE BORDER=1>
+  <TR>
+    <TH>Place</TH>
+    <TH>User</TH>
+    <TH><Q3LOG TYPE="TITLE" NAME="0"> <Q3LOG TYPE="Pass" NAME="LinkUp" VALUE="_0U.html"><Q3LOG TYPE="Value" NAME="Up"><Q3LOG TYPE="Value" NAME="CLOSE"> <Q3LOG TYPE="Pass" NAME="LinkUp" VALUE="_0D.html"><Q3LOG TYPE="Value" NAME="Down"><Q3LOG TYPE="Value" NAME="CLOSE"></TH>
+    <TH><Q3LOG TYPE="TITLE" NAME="1"> <Q3LOG TYPE="Pass" NAME="LinkUp" VALUE="_1U.html"><Q3LOG TYPE="Value" NAME="Up"><Q3LOG TYPE="Value" NAME="CLOSE"> <Q3LOG TYPE="Pass" NAME="LinkUp" VALUE="_1D.html"><Q3LOG TYPE="Value" NAME="Down"><Q3LOG TYPE="Value" NAME="CLOSE"></TH>
+    <TH><Q3LOG TYPE="TITLE" NAME="3"> <Q3LOG TYPE="Pass" NAME="LinkUp" VALUE="_3U.html"><Q3LOG TYPE="Value" NAME="Up"><Q3LOG TYPE="Value" NAME="CLOSE"> <Q3LOG TYPE="Pass" NAME="LinkUp" VALUE="_3D.html"><Q3LOG TYPE="Value" NAME="Down"><Q3LOG TYPE="Value" NAME="CLOSE"></TH>
+    <TH><Q3LOG TYPE="TITLE" NAME="5"> <Q3LOG TYPE="Pass" NAME="LinkUp" VALUE="_5U.html"><Q3LOG TYPE="Value" NAME="Up"><Q3LOG TYPE="Value" NAME="CLOSE"> <Q3LOG TYPE="Pass" NAME="LinkUp" VALUE="_5D.html"><Q3LOG TYPE="Value" NAME="Down"><Q3LOG TYPE="Value" NAME="CLOSE"></TH>
+    <TH><Q3LOG TYPE="TITLE" NAME="4"> <Q3LOG TYPE="Pass" NAME="LinkUp" VALUE="_4U.html"><Q3LOG TYPE="Value" NAME="Up"><Q3LOG TYPE="Value" NAME="CLOSE"> <Q3LOG TYPE="Pass" NAME="LinkUp" VALUE="_4D.html"><Q3LOG TYPE="Value" NAME="Down"><Q3LOG TYPE="Value" NAME="CLOSE"></TH>
+    <TH><Q3LOG TYPE="TITLE" NAME="2"> <Q3LOG TYPE="Pass" NAME="LinkUp" VALUE="_2U.html"><Q3LOG TYPE="Value" NAME="Up"><Q3LOG TYPE="Value" NAME="CLOSE"> <Q3LOG TYPE="Pass" NAME="LinkUp" VALUE="_2D.html"><Q3LOG TYPE="Value" NAME="Down"><Q3LOG TYPE="Value" NAME="CLOSE"></TH>
+  </TR>
+<Q3LOG TYPE="Section" NAME="Above">
+<Q3LOG TYPE="Section" NAME="Below">
+<Q3LOG TYPE="Section" NAME="Totals">
+</TABLE>
+<BR>
+<BR>
+<H2>Top <Q3LOG TYPE="System" NAME="TopWeapons"> Weapons</H2>
+<TABLE WIDTH=85% BORDERCOLORDARK=GRAY BORDERCOLORLIGHT=WHITE BORDER=1>
+  <TR>
+    <TH>Place</TH>
+    <TH>Weapon</TH>
+    <TH>Kills</TH>
+    <TH>Percent</TH>
+  </TR>
+<Q3LOG TYPE="Section" NAME="Weapons">
+</TABLE>
+<BR>
+<BR>
+Please Note: User involved in less than <Q3LOG TYPE="System" NAME="CutOff"> frags are not listed here.
+<H5>
+Last Updated - <Q3LOG TYPE="System" NAME="Time"> <Q3LOG TYPE="System" NAME="Date">
+<BR>
+Created Using - <A HREF="<Q3LOG TYPE="System" NAME="ProgURL">" TARGET="_blank"><Q3LOG TYPE="System" NAME="ProgFull"></A>
+<BR>
+</H5>
+</CENTER>
+</BODY>
+</HTML>

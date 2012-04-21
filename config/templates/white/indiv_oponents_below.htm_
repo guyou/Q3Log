@@ -1,0 +1,13 @@
+  <TR>
+    <TD VALIGN=TOP><FONT COLOR=RED><Q3LOG TYPE="Value" NAME="Member"></FONT></TD>
+    <TD VALIGN=TOP><Q3LOG TYPE="Value" NAME="Oponent"></TD>
+    <TD VALIGN=TOP ALIGN=RIGHT><Q3LOG TYPE="Value" NAME="Kills"></TD>
+    <TD VALIGN=TOP ALIGN=RIGHT><Q3LOG TYPE="Value" NAME="Deaths"></TD>
+    <TD VALIGN=TOP ALIGN=RIGHT><Q3LOG TYPE="Value" NAME="Efficiency">%</TD>
+    <TD VALIGN=TOP>
+      <TABLE WIDTH=100%>
+<Q3LOG TYPE="Section" NAME="Weapons">
+      </TABLE>
+    </TD>
+  </TR>
+
